@@ -11,6 +11,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace FileCloner.P2PNetworking;
 public class FileSender
@@ -61,16 +62,20 @@ public class FileSender
     {
         try
         {
+            // Expected header format for file request
+            const string RequestHeader = "<GET_FILE_REQUEST>:";
+            const string CloneHeader = "<CLONE_FILE>:";
+            // bool requestAccepted = false;
+            bool requestAccepted = true; // for debugging
             using NetworkStream networkStream = client.GetStream();
             // Buffer to read client request
-            byte[] buffer = new byte[256];
+            byte[] buffer = new byte[(int)SenderReceiverConstants.PacketSize];
             int bytesRead = networkStream.Read(buffer, 0, buffer.Length);
             string requestMessage = Encoding.ASCII.GetString(buffer, 0, bytesRead);
 
-            // Expected header format for file request
-            const string RequestHeader = "<GET_FILE_REQUEST>:";
             if (requestMessage.StartsWith(RequestHeader))
             {
+                Debug.WriteLine($"Received Request : {requestMessage} from Client");
                 // Extract file path from request
                 string filePath = requestMessage.Substring(RequestHeader.Length);
 
@@ -80,19 +85,28 @@ public class FileSender
                     byte[] ackResponse = Encoding.ASCII.GetBytes("ACK");
                     networkStream.Write(ackResponse, 0, ackResponse.Length);
                     Debug.WriteLine("File found. ACK sent to client.");
+                    requestAccepted = true;
 
                     // Send the file
                     // SendFile(networkStream, filePath);
                 }
                 else
                 {
-                    Debug.WriteLine("Requested file does not exist.");
+                    byte[] nakResponse = Encoding.ASCII.GetBytes("NAK");
+                    networkStream.Write(nakResponse, 0, nakResponse.Length);
+                    Debug.WriteLine("Requested file does not exist. so sending NAK");
                 }
             }
-            else
+            else if (requestAccepted && requestMessage.StartsWith(CloneHeader))
             {
-                Debug.WriteLine("Invalid request header from client.");
+                Debug.WriteLine($"Received Request : {requestMessage} from Client");
+                // Send the file
+                SendFile(networkStream, requestMessage);
             }
+            //else
+            //{
+            //    Debug.WriteLine("Invalid request header from client.");
+            //}
         }
         catch (Exception ex)
         {
@@ -106,12 +120,32 @@ public class FileSender
 
     private void SendFile(NetworkStream networkStream, string filePath)
     {
+        Debug.WriteLine("Sending File");
+        string currentDirectory = Directory.GetCurrentDirectory();
+        Debug.WriteLine($"Current WOrking directory is {currentDirectory}");
+
+
+        const int BufferSize = (int)SenderReceiverConstants.PacketSize; // 4KB buffer size
+        byte[] buffer = new byte[BufferSize];
+
         try
         {
-            // Read file into byte array
-            byte[] fileBytes = File.ReadAllBytes(filePath);
-            networkStream.Write(fileBytes, 0, fileBytes.Length);
-            Debug.WriteLine($"File '{filePath}' sent to client.");
+            // need to give the actual file path not sure what is the bug....
+
+            // this is the file to be read and written to
+            string debugFilePath = "..\\..\\..\\..\\..\\..\\..\\dummy.txt";
+            using FileStream fileStream = new FileStream(debugFilePath, FileMode.Open, FileAccess.Read);
+            int bytesRead = 0;
+            while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) > 0)
+            {
+                networkStream.Write(buffer, 0, bytesRead);
+                Debug.WriteLine($"Sent {bytesRead} bytes to client.");
+            }
+            Debug.WriteLine($"File '{filePath}' sent to client in chunks.");
+            Application.Current.Dispatcher.Invoke(new Action(() => {
+                MessageBox.Show("Cloned Successfully");
+            }));
+
         }
         catch (Exception ex)
         {

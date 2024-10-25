@@ -78,6 +78,9 @@ public partial class MainWindow : Window
             MessageBox.Show($"File not found: {filePath}", "File Found", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
+        FileReceiver fileReceiver = _fileReceivers["localhost"];
+        Thread requestForFile = new(() => { fileReceiver.RequestForFile(filePath); });
+        requestForFile.Start();
     }
 
     private void PullFileFromFilePath(string filePath)
@@ -108,6 +111,12 @@ public partial class MainWindow : Window
         {
             Debug.WriteLine($"Need to create the file : {savePath}");
         }
+
+        FileReceiver fileReceiver = _fileReceivers["localhost"];
+        Thread cloneFileThread = new Thread(() => {
+            fileReceiver.CloneFile(filePath, savePath);
+        });
+        cloneFileThread.Start();
 
     }
 }
