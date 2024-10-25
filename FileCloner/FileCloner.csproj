@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="c:\dev\FileClonerIterations\FileClonerIteration1\FileCloner\FileCloner\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="c:\dev\FileClonerIterations\FileClonerIteration1\FileCloner\FileCloner\.editorconfig" />
+  </ItemGroup>
+
+</Project>
