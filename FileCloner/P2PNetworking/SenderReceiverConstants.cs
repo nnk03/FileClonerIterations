@@ -12,5 +12,7 @@ namespace FileCloner.P2PNetworking;
 public enum SenderReceiverConstants
 {
     FileServerPortNumber = 8888,
-    FileReceiverPortNumber = 9999
+    FileReceiverPortNumber = 9999,
+    PacketSize = 4096
+
 }

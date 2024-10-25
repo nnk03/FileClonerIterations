@@ -18,3 +18,4 @@ c:\dev\FileClonerIterations\FileClonerIteration1\FileCloner\FileCloner\obj\Debug
 c:\dev\FileClonerIterations\FileClonerIteration1\FileCloner\FileCloner\obj\Debug\net8.0-windows\FileCloner.pdb
 c:\dev\FileClonerIterations\FileClonerIteration1\FileCloner\FileCloner\obj\Debug\net8.0-windows\FileCloner.genruntimeconfig.cache
 c:\dev\FileClonerIterations\FileClonerIteration1\FileCloner\FileCloner\obj\Debug\net8.0-windows\ref\FileCloner.dll
+C:\dev\FileClonerIterations\FileClonerIteration1\FileCloner\FileCloner\obj\Debug\net8.0-windows\FileCloner.sourcelink.json
