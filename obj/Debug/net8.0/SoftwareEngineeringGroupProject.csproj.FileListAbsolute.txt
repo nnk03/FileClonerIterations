@@ -9,3 +9,11 @@ C:\dev\FileClonerIterations\FileClonerIteration2\SoftwareEngineeringGroupProject
 C:\dev\FileClonerIterations\FileClonerIteration2\SoftwareEngineeringGroupProject\SoftwareEngineeringGroupProject\obj\Debug\net8.0\refint\SoftwareEngineeringGroupProject.dll
 C:\dev\FileClonerIterations\FileClonerIteration2\SoftwareEngineeringGroupProject\SoftwareEngineeringGroupProject\obj\Debug\net8.0\SoftwareEngineeringGroupProject.pdb
 C:\dev\FileClonerIterations\FileClonerIteration2\SoftwareEngineeringGroupProject\SoftwareEngineeringGroupProject\obj\Debug\net8.0\ref\SoftwareEngineeringGroupProject.dll
+C:\Users\sarat\source\repos\FileClonerIterations\obj\Debug\net8.0\SoftwareEngineeringGroupProject.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\sarat\source\repos\FileClonerIterations\obj\Debug\net8.0\SoftwareEngineeringGroupProject.AssemblyInfoInputs.cache
+C:\Users\sarat\source\repos\FileClonerIterations\obj\Debug\net8.0\SoftwareEngineeringGroupProject.AssemblyInfo.cs
+C:\Users\sarat\source\repos\FileClonerIterations\obj\Debug\net8.0\SoftwareEngineeringGroupProject.csproj.CoreCompileInputs.cache
+C:\Users\sarat\source\repos\FileClonerIterations\obj\Debug\net8.0\SoftwareEngineeringGroupProject.sourcelink.json
+C:\Users\sarat\source\repos\FileClonerIterations\obj\Debug\net8.0\SoftwareEngineeringGroupProject.dll
+C:\Users\sarat\source\repos\FileClonerIterations\obj\Debug\net8.0\refint\SoftwareEngineeringGroupProject.dll
+C:\Users\sarat\source\repos\FileClonerIterations\obj\Debug\net8.0\SoftwareEngineeringGroupProject.pdb
