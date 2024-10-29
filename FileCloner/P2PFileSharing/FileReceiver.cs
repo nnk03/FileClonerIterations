@@ -15,13 +15,14 @@ using Networking.Communication;
 using Networking.Serialization;
 
 namespace SoftwareEngineeringGroupProject.FileCloner.P2PFileSharing;
-public class FileReceiver : INotificationHandler
+public class FileReceiver : FileClonerHeaders, INotificationHandler
 {
     // this must establish a connection with every file server
     // get serverAddress i.e IP : Port of all file Servers
     // save it somewhere
     // and then request through each socket about the availability of files
-    private Logger.Logger _logger = new("FileReceiver");
+    private const string CurrentModuleName = "FileReceiver";
+    private Logger.Logger _logger = new(CurrentModuleName);
 
     private CommunicatorClient _fileReceiver;
     private Serializer _serializer = new Serializer();
@@ -47,32 +48,13 @@ public class FileReceiver : INotificationHandler
         _fileReceiver.Subscribe("FileReceiver", this, false);
 
         // broadcast the message of getting all IP
-        _fileReceiver.Send("<GET_ALL_IP_PORT>", "FileCloner", null);
+        _fileReceiver.Send(GetAllIPPortHeader, "FileCloner", null);
 
         CreateAndCloseFile(ReceiverConfigFilePath);
 
 
         // when starting, read the config file
         SaveFileRequests();
-    }
-
-    private bool CreateAndCloseFile(string filePath)
-    {
-        // returns if success or failure
-        try
-        {
-            if (!File.Exists(filePath))
-            {
-                File.Create(filePath).Close();
-            }
-            return true;
-        }
-        catch (Exception ex)
-        {
-            Trace.Write(ex);
-        }
-
-        return false;
     }
 
     // send the request for files
@@ -120,10 +102,30 @@ public class FileReceiver : INotificationHandler
     {
         if (serializedData.StartsWith("<ACK_FILE_REQUESTS>:"))
         {
+            // find the IP address and port number of the machine
+            // now assuming its localhost_9999
 
-
+            string fromWhichServer = "localhost_9999";
+            Thread saveResponseThread = new Thread(() => {
+                SaveResponse(serializedData, fromWhichServer);
+            });
+            saveResponseThread.Start();
         }
 
+    }
+
+    private void SaveResponse(string data, string fromWhichServer)
+    {
+        string saveFileName = $"{fromWhichServer}.json";
+        if (!CreateAndCloseFile(saveFileName))
+        {
+            _logger.Log($"Not able to create file {saveFileName}");
+            return;
+        }
+        // data is serialized json
+        // saving it in the fileName saveFileName
+
+        File.WriteAllText(saveFileName, data);
     }
 
     public void CloneFile(string filePath, string savePath, string fileServerIP, string fileServerPort)
@@ -132,11 +134,29 @@ public class FileReceiver : INotificationHandler
     }
 
 
-    public void RequestFile(string filePath)
+    public void RequestFiles()
     {
         // broadcast the request to all file servers
-        _fileReceiver.Send($"<FILE_REQUEST>:{filePath}", "FileCloner");
+        string sendFileRequests = _serializer.Serialize(_requestFilesPath);
+        _fileReceiver.Send(FileRequestHeader + sendFileRequests, CurrentModuleName, null);
+    }
+    private bool CreateAndCloseFile(string filePath)
+    {
+        // returns if success or failure
+        try
+        {
+            if (!File.Exists(filePath))
+            {
+                File.Create(filePath).Close();
+            }
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Trace.Write(ex);
+        }
 
+        return false;
     }
 
 }

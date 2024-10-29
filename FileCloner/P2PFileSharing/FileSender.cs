@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,8 +12,10 @@ using Networking.Serialization;
 
 namespace SoftwareEngineeringGroupProject.FileCloner.P2PFileSharing;
 
-public class FileSender : INotificationHandler
+public class FileSender : FileClonerHeaders, INotificationHandler
 {
+    private object _syncLock = new();
+    private Dictionary<string, TcpClient> _clientDictionary;
 
     private Logger.Logger _logger = new("FileSender");
 
@@ -41,7 +44,19 @@ public class FileSender : INotificationHandler
 
     public void OnDataReceived(string serializedData)
     {
-        throw new NotImplementedException();
+        if (serializedData.StartsWith(FileRequestHeader))
+        {
+            // after the header contains the serialized data
+            string serializedRequest = serializedData.Split(':', 2)[1];
+            List<string> fileRequests = _serializer.Deserialize<List<string>>(serializedRequest);
+            // fileRequests contains the file requests
+            // example ['A.txt', 'B.txt']
+
+            // Now check if the requested files exist and send ACK using thread ??
+            // but now we need to send the response to that specific client which gave us
+            // the broadcast message
+
+        }
     }
 
     public void ResponseToFileRequest(string filePath)
@@ -51,81 +66,28 @@ public class FileSender : INotificationHandler
 
         }
     }
+    public void OnClientJoined(TcpClient socket)
+    {
+        IPEndPoint? remoteEndPoint = (IPEndPoint)socket.Client.RemoteEndPoint;
+        if (remoteEndPoint == null)
+        {
+            return;
+        }
+        string ipAddress = remoteEndPoint.Address.ToString();
+        string port = remoteEndPoint.Port.ToString();
+        // using underscores since apparently fileNames cannot have :
+        string address = $"{ipAddress}_{port}";
 
-    //public string OnDataReceived(string data)
-    //{
-    //    // string deserializedData = _serializer.Deserialize(serializedData);
-    //    if (data.StartsWith("<FILE_REQUEST>:"))
-    //    {
-    //        // second element will be the filePath
-    //        string[] headerAndFilePath = data.Split(':', 2);
-    //        string filePath = headerAndFilePath[1];
+        _logger.Log($"Client Joined : {address}");
+        lock (_syncLock)
+        {
+            _clientDictionary.Add(address, socket);
+        }
+    }
 
-    //        if (File.Exists(filePath))
-    //        {
-    //            // if file exists, then return filePath and timestamp
-    //            string returnMessage = "true";
-    //            returnMessage += $":{filePath}:{File.GetLastWriteTime(filePath).ToString()}";
-    //            return returnMessage;
+    public void OnClientLeft(string clientId)
+    {
 
-    //        }
-    //        else
-    //        {
-    //            return "false";
-    //        }
-    //    }
-    //    else if (data.StartsWith("<CLONE_FILE>:"))
-    //    {
-
-    //    }
-    //else if (data.startswith("<GET_ALL_IP>:")){
-    //    return myIP;
-    //    }
-
-    //}
-
-    //private void HandleClient(TcpClient socket)
-    //{
-    //    try
-    //    {
-    //        NetworkStream stream = socket.GetStream();
-    //        byte[] buffer = new byte[(int)SenderReceiverConstants.PacketSize];
-
-    //        int bytesRead;
-
-    //        while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) != 0)
-    //        {
-    //            // Convert received bytes to string
-    //            string receivedData = Encoding.UTF8.GetString(buffer, 0, bytesRead);
-    //            Trace.WriteLine("Received: " + receivedData);
-
-    //            // Process the data
-    //            string response = OnDataReceived(receivedData);
-
-    //            byte[] responseBytes = Encoding.UTF8.GetBytes(response);
-    //            stream.Write(responseBytes, 0, responseBytes.Length);
-    //            Trace.WriteLine("ACK sent: " + response);
-    //        }
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        Trace.WriteLine($"[FileCloner] : Error Handling Client {ex.Message}");
-    //    }
-
-
-    //}
-
-    //public void OnClientJoined(TcpClient socket)
-    //{
-    //    if (socket == null)
-    //    {
-    //        return;
-    //    }
-    //    Thread handleClientThread = new Thread(() => {
-    //        HandleClient(socket);
-    //    });
-    //    handleClientThread.Start();
-
-    //}
+    }
 
 }
