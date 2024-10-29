@@ -18,4 +18,15 @@ public class FileClonerHeaders
     protected const string GetAllIPPortHeader = "<GET_ALL_IP_PORT>:";
     protected const string AckGetAllIPPortHeader = "<ACK_GET_ALL_IP_PORT>:";
 
+    /// <summary>
+    /// Helper function to return the address in concatenated form
+    /// </summary>
+    /// <param name="ipAddress"></param>
+    /// <param name="port"></param>
+    /// <returns></returns>
+    protected string GetConcatenatedAddress(string ipAddress, string port)
+    {
+        return $"{ipAddress}_{port}";
+    }
+
 }

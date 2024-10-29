@@ -14,11 +14,22 @@ namespace SoftwareEngineeringGroupProject.FileCloner.Logger;
 public class Logger
 {
     private string _moduleName;
+    /// <summary>
+    /// Logger which logs to the Trace, with Module Name
+    /// </summary>
+    /// <param name="moduleName"></param>
     public Logger(string moduleName)
     {
         _moduleName = moduleName;
     }
 
+    /// <summary>
+    /// Logs the message to the Trace
+    /// </summary>
+    /// <param name="message"></param>
+    /// <param name="memberName"></param>
+    /// <param name="filePath"></param>
+    /// <param name="lineNumber"></param>
     public void Log(string message,
                     [CallerMemberName] string memberName = "",
                     [CallerFilePath] string filePath = "",
