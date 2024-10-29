@@ -13,6 +13,9 @@ namespace SoftwareEngineeringGroupProject.FileCloner.P2PFileSharing;
 
 public class FileSender : INotificationHandler
 {
+
+    private Logger.Logger _logger = new("FileSender");
+
     private CommunicatorServer _fileServer;
     // private const int FileServerPort = (int)SenderReceiverConstants.FileReceiverPortNumber;
     private Dictionary<string, TcpClient> _clientIdToSocket;
@@ -29,22 +32,17 @@ public class FileSender : INotificationHandler
         _fileServer = new CommunicatorServer();
         _myAddress = _fileServer.Start();
 
+        // subscribe to messages with module name as "FileSender"
+        _fileServer.Subscribe("FileSender", this, false);
+
         // gets the reference of the map
         _clientIdToSocket = _fileServer.GetClientList();
-
     }
 
-
-
-    //public string SendFile(string filePath)
-    //{
-    //    if (!File.Exists(filePath))
-    //    {
-    //        return "FILE_NOT_FOUND";
-    //    }
-
-    //}
-
+    public void OnDataReceived(string serializedData)
+    {
+        throw new NotImplementedException();
+    }
 
     public void ResponseToFileRequest(string filePath)
     {
