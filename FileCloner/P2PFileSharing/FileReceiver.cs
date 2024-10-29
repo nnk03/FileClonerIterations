@@ -26,8 +26,9 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
     private Logger.Logger _logger = new(CurrentModuleName);
 
     // private CommunicatorClient _fileReceiver;
-    private CommunicatorServer _fileReceiverServer; // for broadcasting messages
-    private string _myServerAddress;
+    // CommunicatorServer is much more useful than Communicator Client??
+    // for broadcasting messages
+    private CommunicatorServer _fileReceiverServer;     private string _myServerAddress;
     private Serializer _serializer = new Serializer();
     private Dictionary<string, TcpClient> _receiverToSenderMap = new();
     private List<string> _fileServerAddresses = new();
