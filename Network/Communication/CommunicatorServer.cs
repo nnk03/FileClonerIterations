@@ -1,4 +1,4 @@
-using Networking.Queues;
+﻿using Networking.Queues;
 using Networking.Sockets;
 using System;
 using System.Collections.Generic;
