@@ -41,6 +41,7 @@ public class FileSender : FileClonerHeaders, INotificationHandler
         // create a file server in each device to serve the files
         _fileServer = new CommunicatorServer();
         _myServerAddress = _fileServer.Start();
+        _myServerAddress = _myServerAddress.Replace(':', '_');
 
         // subscribe to messages with module name as "FileSender"
         _fileServer.Subscribe("FileSender", this, false);
