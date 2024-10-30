@@ -24,6 +24,9 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
     // and then request through each socket about the availability of files
     private const string CurrentModuleName = "FileReceiver";
     private Logger.Logger _logger = new(CurrentModuleName);
+    private Dictionary<string, TcpClient> _clientDictionary = new();
+    private Dictionary<string, TcpClient> _clientIdToSocket;
+    private object _syncLock = new();
 
     // private CommunicatorClient _fileReceiver;
     // CommunicatorServer is much more useful than Communicator Client??
@@ -46,12 +49,18 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
     private const string ReceiverConfigTimeStampKey = "timeStamp";
     public FileReceiver()
     {
+        _syncLock = new();
+        _clientDictionary = new();
+        _clientIdToSocket = new();
+        _logger = new(CurrentModuleName);
+
         // for each file to be received from a particular device D
         // creates a new FileReceiver which handles the receiving and saving of the particular file
         // _fileReceiver = new CommunicatorClient();
         _fileReceiverServer = new CommunicatorServer();
         _myServerAddress = _fileReceiverServer.Start();
         _myServerAddress = _myServerAddress.Replace(':', '_');
+        _clientIdToSocket = _fileReceiverServer.GetClientList();
 
         // Subscribe for messages with module name as "FileReceiver"
         // _fileReceiver.Subscribe(CurrentModuleName, this, false);
@@ -67,6 +76,7 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
 
         // when starting, read the config file
         SaveFileRequests();
+
     }
 
     /// <summary>
@@ -75,20 +85,24 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
     /// <param name="serializedData"></param>
     public void OnDataReceived(string serializedData)
     {
+        // after the header contains the serialized data
+        string[] serializedDataList = serializedData.Split(':', MessageSplitLength);
+        string header = serializedDataList[HeaderIndex];
+        string sendToAddress = serializedDataList[AddressIndex];
+        string clientId = GetClientId(sendToAddress);
+
         if (serializedData.StartsWith(AckFileRequestHeader))
         {
-            // find the IP address and port number of the machine
-            // now assuming its localhost_9999
-            // need to find out how to get the server address
-            string[] serializedDataList = serializedData.Split(':', MessageSplitLength);
-
-            string fromWhichServer = serializedDataList[AddressIndex];
-            string serializedJsonData = serializedData.Split(':', 2)[MessageIndex];
+            string serializedJsonData = serializedDataList[MessageIndex];
 
             Thread saveResponseThread = new Thread(() => {
-                SaveResponse(serializedJsonData, fromWhichServer);
+                SaveResponse(serializedJsonData, sendToAddress);
             });
             saveResponseThread.Start();
+        }
+        else if (serializedData.StartsWith(AckCloneFilesHeader))
+        {
+            // format is AckCloneFilesHeader:filePath:count:chunk
         }
 
     }
