@@ -15,16 +15,8 @@ namespace SoftwareEngineeringGroupProject.FileCloner.P2PFileSharing;
 
 public class FileSender : FileClonerHeaders, INotificationHandler
 {
-    private object _syncLock = new();
-    private Dictionary<string, TcpClient> _clientDictionary = new();
-
     private const string CurrentModule = "FileSender";
-    private Logger.Logger _logger = new(CurrentModule);
-
     private CommunicatorServer _fileServer;
-    // private const int FileServerPort = (int)SenderReceiverConstants.FileReceiverPortNumber;
-    private Dictionary<string, TcpClient> _clientIdToSocket;
-
 
     private const string SenderConfigFilePathKey = "filePath";
     private const string SenderConfigSavePathKey = "savePath";
@@ -38,6 +30,11 @@ public class FileSender : FileClonerHeaders, INotificationHandler
     // get clientIdToSocket Dictionary
     public FileSender()
     {
+        _syncLock = new();
+        _clientDictionary = new();
+        _clientIdToSocket = new();
+        _logger = new(CurrentModule);
+
         // create a file server in each device to serve the files
         _fileServer = new CommunicatorServer();
         _myServerAddress = _fileServer.Start();
@@ -142,93 +139,6 @@ public class FileSender : FileClonerHeaders, INotificationHandler
             Console.WriteLine($"Error sending file: {ex.Message}");
         }
 
-    }
-
-    /// <summary>
-    /// Adds the key, value pair (address, socket) to the 
-    /// `clientDictionary`
-    /// </summary>
-    /// <param name="socket"></param>
-    public void OnClientJoined(TcpClient socket)
-    {
-        string address = GetAddressFromSocket(socket);
-        _logger.Log($"Client Joined : {address}");
-        lock (_syncLock)
-        {
-            _clientDictionary.Add(address, socket);
-        }
-    }
-
-    /// <summary>
-    /// if clientId key is present in the dictionary, remove it
-    /// </summary>
-    /// <param name="clientId"></param>
-    public void OnClientLeft(string clientId)
-    {
-        lock (_syncLock)
-        {
-            if (_clientDictionary.ContainsKey(clientId))
-            {
-                _clientDictionary.Remove(clientId);
-            }
-        }
-    }
-
-    /// <summary>
-    /// Gets the client ID from the dictionary _clientIdToSocket
-    /// given the TcpClient `socket`
-    /// </summary>
-    /// <param name="socket"></param>
-    /// <returns></returns>
-    private string GetClientId(TcpClient socket)
-    {
-        foreach (KeyValuePair<string, TcpClient> kvPair in _clientIdToSocket)
-        {
-            if (kvPair.Value == socket)
-            {
-                return kvPair.Key;
-            }
-        }
-        return "";
-    }
-
-    /// <summary>
-    /// Gets the client ID from the dictionary _clientIdToSocket
-    /// given the string `address`
-    /// </summary>
-    /// <param name="socket"></param>
-    /// <returns></returns>
-    private string GetClientId(string address)
-    {
-        foreach (KeyValuePair<string, TcpClient> kvPair in _clientIdToSocket)
-        {
-            TcpClient socket = kvPair.Value;
-            if (GetAddressFromSocket(socket) == address)
-            {
-                return kvPair.Key;
-            }
-        }
-        return "";
-    }
-
-    /// <summary>
-    /// Gets the Concatenated address from the socket
-    /// </summary>
-    /// <param name="socket"></param>
-    /// <returns></returns>
-    private string GetAddressFromSocket(TcpClient socket)
-    {
-        IPEndPoint? remoteEndPoint = (IPEndPoint?)socket.Client.RemoteEndPoint;
-        if (remoteEndPoint == null)
-        {
-            return "";
-        }
-        string ipAddress = remoteEndPoint.Address.ToString();
-        string port = remoteEndPoint.Port.ToString();
-
-        // using underscores since apparently fileNames cannot have :
-        string address = GetConcatenatedAddress(ipAddress, port);
-        return address;
     }
 
     /// <summary>
