@@ -104,6 +104,13 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
         {
             // format is AckCloneFilesHeader:filePath:count:chunk
         }
+        else if (serializedData.StartsWith(RequestOneFileHeader))
+        {
+            Thread requestFileThread = new Thread(() => {
+                RequestFileFromDevices(serializedDataList[MessageIndex]);
+            });
+            requestFileThread.Start();
+        }
 
     }
 
@@ -121,6 +128,21 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
         _fileReceiverServer.Send(
             GetMessage(FileRequestHeader, sendFileRequests),
             CurrentModuleName, null);
+    }
+
+    public void RequestFileFromDevices(string jsonRequest)
+    {
+        List<string> serializedDataRequest = _serializer.Deserialize<List<string>>(jsonRequest);
+        //Assuming that the json file consists of data which is of the form 
+        //fileName:address
+        for(string s in serializedDataRequest)
+        {
+
+            _fileReceiverServer.Send(
+                GetMessage(CloneFilesHeader, s.Split(':')[0]),
+                CurrentModuleName, GetClientId(s.Split(':')[1])
+                );
+        }
     }
 
     /// <summary>

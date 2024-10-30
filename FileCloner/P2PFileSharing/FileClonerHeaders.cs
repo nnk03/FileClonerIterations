@@ -25,6 +25,7 @@ public class FileClonerHeaders
     protected const string AckCloneFilesHeader = "<ACK_CLONE_FILES>";
     protected const string GetAllIPPortHeader = "<GET_ALL_IP_PORT>";
     protected const string AckGetAllIPPortHeader = "<ACK_GET_ALL_IP_PORT>";
+    protected const string RequestOneFileHeader = "<REQUEST_ONE_FILE>";
 
     protected const int PacketSize = 4096;
 

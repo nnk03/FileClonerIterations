@@ -8,6 +8,6 @@ build_property.PlatformNeutralAssembly =
 build_property.EnforceExtendedAnalyzerRules = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = FileCloner
-build_property.ProjectDir = C:\dev\FileClonerIterations\FileClonerIteration1\FileCloner\FileCloner\
+build_property.ProjectDir = C:\Users\sarat\source\repos\FileClonerIterations\FileCloner\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 

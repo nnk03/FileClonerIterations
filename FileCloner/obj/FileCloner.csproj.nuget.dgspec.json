@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\dev\\FileClonerIterations\\FileClonerIteration1\\FileCloner\\FileCloner\\FileCloner.csproj": {}
+    "C:\\Users\\sarat\\source\\repos\\FileClonerIterations\\FileCloner\\FileCloner.csproj": {}
   },
   "projects": {
-    "C:\\dev\\FileClonerIterations\\FileClonerIteration1\\FileCloner\\FileCloner\\FileCloner.csproj": {
+    "C:\\Users\\sarat\\source\\repos\\FileClonerIterations\\FileCloner\\FileCloner.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\dev\\FileClonerIterations\\FileClonerIteration1\\FileCloner\\FileCloner\\FileCloner.csproj",
+        "projectUniqueName": "C:\\Users\\sarat\\source\\repos\\FileClonerIterations\\FileCloner\\FileCloner.csproj",
         "projectName": "FileCloner",
-        "projectPath": "C:\\dev\\FileClonerIterations\\FileClonerIteration1\\FileCloner\\FileCloner\\FileCloner.csproj",
-        "packagesPath": "C:\\Users\\NEERAJ KRISHNA N\\.nuget\\packages\\",
-        "outputPath": "C:\\dev\\FileClonerIterations\\FileClonerIteration1\\FileCloner\\FileCloner\\obj\\",
+        "projectPath": "C:\\Users\\sarat\\source\\repos\\FileClonerIterations\\FileCloner\\FileCloner.csproj",
+        "packagesPath": "C:\\Users\\sarat\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\sarat\\source\\repos\\FileClonerIterations\\FileCloner\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\NEERAJ KRISHNA N\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\sarat\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,7 +22,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -64,7 +63,7 @@
               "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
