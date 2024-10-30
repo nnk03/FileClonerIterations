@@ -51,15 +51,16 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
         // _fileReceiver = new CommunicatorClient();
         _fileReceiverServer = new CommunicatorServer();
         _myServerAddress = _fileReceiverServer.Start();
+        _myServerAddress = _myServerAddress.Replace(':', '_');
 
         // Subscribe for messages with module name as "FileReceiver"
         // _fileReceiver.Subscribe(CurrentModuleName, this, false);
         _fileReceiverServer.Subscribe(CurrentModuleName, this, false);
 
-        // broadcast the message of getting all IP
-        _fileReceiverServer.Send(
-            GetMessage(GetAllIPPortHeader, ""),
-            CurrentModuleName, null);
+        // no need of broadcast the message of getting all IP
+        //_fileReceiverServer.Send(
+        //    GetMessage(GetAllIPPortHeader, ""),
+        //    CurrentModuleName, null);
 
         CreateAndCloseFile(ReceiverConfigFilePath);
 
@@ -130,10 +131,10 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
         File.WriteAllText(saveFileName, data);
     }
 
-    public void CloneFile(string filePath, string savePath, string fileServerIP, string fileServerPort)
-    {
-        // get the file from the fileServer and save it in savePath
-    }
+    //public void CloneFile(string filePath, string savePath, string fileServerIP, string fileServerPort)
+    //{
+    //    // get the file from the fileServer and save it in savePath
+    //}
 
     /// <summary>
     /// Helper function to create and close the file
