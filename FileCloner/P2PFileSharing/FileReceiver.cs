@@ -28,7 +28,8 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
     // private CommunicatorClient _fileReceiver;
     // CommunicatorServer is much more useful than Communicator Client??
     // for broadcasting messages
-    private CommunicatorServer _fileReceiverServer;     private string _myServerAddress;
+    private CommunicatorServer _fileReceiverServer;
+    private string _myServerAddress;
     private Serializer _serializer = new Serializer();
     private Dictionary<string, TcpClient> _receiverToSenderMap = new();
     private List<string> _fileServerAddresses = new();
@@ -56,7 +57,9 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
         _fileReceiverServer.Subscribe(CurrentModuleName, this, false);
 
         // broadcast the message of getting all IP
-        _fileReceiverServer.Send(GetAllIPPortHeader, CurrentModuleName, null);
+        _fileReceiverServer.Send(
+            GetMessage(GetAllIPPortHeader, ""),
+            CurrentModuleName, null);
 
         CreateAndCloseFile(ReceiverConfigFilePath);
 
@@ -76,8 +79,10 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
             // find the IP address and port number of the machine
             // now assuming its localhost_9999
             // need to find out how to get the server address
-            string fromWhichServer = "localhost_9999";
-            string serializedJsonData = serializedData.Split(':', 2)[1];
+            string[] serializedDataList = serializedData.Split(':', MessageSplitLength);
+
+            string fromWhichServer = serializedDataList[AddressIndex];
+            string serializedJsonData = serializedData.Split(':', 2)[MessageIndex];
 
             Thread saveResponseThread = new Thread(() => {
                 SaveResponse(serializedJsonData, fromWhichServer);
@@ -98,7 +103,9 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
         // broadcast the request to all file servers
         string sendFileRequests = _serializer.Serialize(_requestFilesPath);
         // client can't really send broadcast, hence using the server
-        _fileReceiverServer.Send(FileRequestHeader + sendFileRequests, CurrentModuleName, null);
+        _fileReceiverServer.Send(
+            GetMessage(FileRequestHeader, sendFileRequests),
+            CurrentModuleName, null);
     }
 
     /// <summary>
@@ -212,6 +219,18 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
         {
             _logger.Log(ex.Message);
         }
+    }
+
+    /// <summary>
+    /// overloads the base functionality since myAddress is known, and thus we don't have to give it every time
+    /// when sending a message
+    /// </summary>
+    /// <param name="header"></param>
+    /// <param name="message"></param>
+    /// <returns></returns>
+    private string GetMessage(string header, string message)
+    {
+        return GetMessage(_myServerAddress, header, message);
     }
 
 }

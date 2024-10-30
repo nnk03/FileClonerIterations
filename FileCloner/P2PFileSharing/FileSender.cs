@@ -54,7 +54,9 @@ public class FileSender : FileClonerHeaders, INotificationHandler
         if (serializedData.StartsWith(FileRequestHeader))
         {
             // after the header contains the serialized data
-            string serializedRequest = serializedData.Split(':', 2)[1];
+            string[] serializedDataList = serializedData.Split(':', 3);
+
+            string serializedRequest = serializedDataList[MessageIndex];
             List<string> fileRequests = _serializer.Deserialize<List<string>>(serializedRequest);
             // fileRequests contains the file requests
             // example ['A.txt', 'B.txt']
@@ -90,22 +92,15 @@ public class FileSender : FileClonerHeaders, INotificationHandler
 
             // currently assuming its localhost_8888
 
-            string sendToAddress = "localhost_8888";
+            string sendToAddress = serializedDataList[AddressIndex];
             string clientId = GetClientId(sendToAddress);
 
-            _fileServer.Send(AckFileRequestHeader + jsonResponse, CurrentModule, clientId);
-
+            _fileServer.Send(
+                GetMessage(AckFileRequestHeader, jsonResponse),
+                CurrentModule, clientId);
         }
 
 
-    }
-
-    public void ResponseToFileRequest(string filePath)
-    {
-        if (File.Exists(filePath))
-        {
-
-        }
     }
 
     /// <summary>
@@ -193,6 +188,18 @@ public class FileSender : FileClonerHeaders, INotificationHandler
         // using underscores since apparently fileNames cannot have :
         string address = GetConcatenatedAddress(ipAddress, port);
         return address;
+    }
+
+    /// <summary>
+    /// overloads the base functionality since myAddress is known, and thus we don't have to give it every time
+    /// when sending a message
+    /// </summary>
+    /// <param name="header"></param>
+    /// <param name="message"></param>
+    /// <returns></returns>
+    private string GetMessage(string header, string message)
+    {
+        return GetMessage(_myServerAddress, header, message);
     }
 
 }
