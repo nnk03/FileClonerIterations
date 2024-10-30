@@ -52,10 +52,14 @@ public class FileSender : FileClonerHeaders, INotificationHandler
 
     public void OnDataReceived(string serializedData)
     {
-        if (serializedData.StartsWith(FileRequestHeader))
+        // after the header contains the serialized data
+        string[] serializedDataList = serializedData.Split(':', MessageSplitLength);
+        string header = serializedDataList[HeaderIndex];
+        string sendToAddress = serializedDataList[AddressIndex];
+        string clientId = GetClientId(sendToAddress);
+
+        if (header == FileRequestHeader)
         {
-            // after the header contains the serialized data
-            string[] serializedDataList = serializedData.Split(':', MessageSplitLength);
 
             string serializedRequest = serializedDataList[MessageIndex];
             List<string> fileRequests = _serializer.Deserialize<List<string>>(serializedRequest);
@@ -91,16 +95,52 @@ public class FileSender : FileClonerHeaders, INotificationHandler
             //    fileDataList, new JsonSerializerOptions { WriteIndented = true }
             //);
 
-            // currently assuming its localhost_8888
-
-            string sendToAddress = serializedDataList[AddressIndex];
-            string clientId = GetClientId(sendToAddress);
-
             _fileServer.Send(
                 GetMessage(AckFileRequestHeader, jsonResponse),
                 CurrentModule, clientId);
         }
+        else if (header == CloneFilesHeader)
+        {
+            string filePath = serializedDataList[MessageIndex];
+            // take the contents of the file path and send it in chunks
 
+            Thread sendFileThread = new(() => {
+                SendFileOverNetwork(filePath, clientId);
+            });
+            sendFileThread.Start();
+        }
+
+    }
+
+    private void SendFileOverNetwork(string filePath, string clientId)
+    {
+        try
+        {
+            // Open the file with a StreamReader
+            using StreamReader reader = new StreamReader(filePath);
+            char[] buffer = new char[PacketSize];
+            int charsRead;
+
+            int count = 0;
+
+            // Read the file in chunks
+            while ((charsRead = reader.Read(buffer, 0, buffer.Length)) > 0)
+            {
+                // Convert the characters read into a string
+                string chunk = new string(buffer, 0, charsRead);
+
+                // Send the chunk over the network
+                _fileServer.Send(
+                    GetMessage(AckCloneFilesHeader, $"{filePath}:{count}:{chunk}"),
+                    CurrentModule, clientId);
+                ++count;
+            }
+        }
+        catch (Exception ex)
+        {
+            // Handle exceptions (file not found, network issues, etc.)
+            Console.WriteLine($"Error sending file: {ex.Message}");
+        }
 
     }
 

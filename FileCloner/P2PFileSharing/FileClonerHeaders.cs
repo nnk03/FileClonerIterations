@@ -18,6 +18,8 @@ public class FileClonerHeaders
     protected const string GetAllIPPortHeader = "<GET_ALL_IP_PORT>";
     protected const string AckGetAllIPPortHeader = "<ACK_GET_ALL_IP_PORT>";
 
+    protected const int PacketSize = 4096;
+
     protected const int HeaderIndex = 0;
     protected const int AddressIndex = 1;
     protected const int MessageIndex = 2;
