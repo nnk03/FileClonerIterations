@@ -54,7 +54,7 @@ public class FileSender : FileClonerHeaders, INotificationHandler
         if (serializedData.StartsWith(FileRequestHeader))
         {
             // after the header contains the serialized data
-            string[] serializedDataList = serializedData.Split(':', 3);
+            string[] serializedDataList = serializedData.Split(':', MessageSplitLength);
 
             string serializedRequest = serializedDataList[MessageIndex];
             List<string> fileRequests = _serializer.Deserialize<List<string>>(serializedRequest);
