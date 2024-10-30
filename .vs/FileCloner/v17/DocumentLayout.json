@@ -1,0 +1,152 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\sarat\\source\\repos\\FileClonerIterations\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|c:\\users\\sarat\\source\\repos\\filecloneriterations\\filecloner\\p2pfilesharing\\filereceiver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|solutionrelative:filecloner\\p2pfilesharing\\filereceiver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|c:\\users\\sarat\\source\\repos\\filecloneriterations\\filecloner\\p2pfilesharing\\fileloader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|solutionrelative:filecloner\\p2pfilesharing\\fileloader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|c:\\users\\sarat\\source\\repos\\filecloneriterations\\filecloner\\p2pnetworking\\filereceiver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|solutionrelative:filecloner\\p2pnetworking\\filereceiver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|c:\\users\\sarat\\source\\repos\\filecloneriterations\\filecloner\\p2pnetworking\\filesender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|solutionrelative:filecloner\\p2pnetworking\\filesender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|c:\\users\\sarat\\source\\repos\\filecloneriterations\\filecloner\\p2pnetworking\\filepuller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|solutionrelative:filecloner\\p2pnetworking\\filepuller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|c:\\users\\sarat\\source\\repos\\filecloneriterations\\filecloner\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|solutionrelative:filecloner\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|c:\\users\\sarat\\source\\repos\\filecloneriterations\\filecloner\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|solutionrelative:filecloner\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|c:\\users\\sarat\\source\\repos\\filecloneriterations\\filecloner\\p2pnetworking\\senderreceiverconstants.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|solutionrelative:filecloner\\p2pnetworking\\senderreceiverconstants.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 1,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedHeight": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "FileLoader.cs",
+              "DocumentMoniker": "C:\\Users\\sarat\\source\\repos\\FileClonerIterations\\FileCloner\\P2PFileSharing\\FileLoader.cs",
+              "RelativeDocumentMoniker": "FileCloner\\P2PFileSharing\\FileLoader.cs",
+              "ToolTip": "C:\\Users\\sarat\\source\\repos\\FileClonerIterations\\FileCloner\\P2PFileSharing\\FileLoader.cs",
+              "RelativeToolTip": "FileCloner\\P2PFileSharing\\FileLoader.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-30T12:24:32.499Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "FilePuller.cs",
+              "DocumentMoniker": "C:\\Users\\sarat\\source\\repos\\FileClonerIterations\\FileCloner\\P2PNetworking\\FilePuller.cs",
+              "RelativeDocumentMoniker": "FileCloner\\P2PNetworking\\FilePuller.cs",
+              "ToolTip": "C:\\Users\\sarat\\source\\repos\\FileClonerIterations\\FileCloner\\P2PNetworking\\FilePuller.cs",
+              "RelativeToolTip": "FileCloner\\P2PNetworking\\FilePuller.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-30T12:23:17.398Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "FileReceiver.cs",
+              "DocumentMoniker": "C:\\Users\\sarat\\source\\repos\\FileClonerIterations\\FileCloner\\P2PFileSharing\\FileReceiver.cs",
+              "RelativeDocumentMoniker": "FileCloner\\P2PFileSharing\\FileReceiver.cs",
+              "ToolTip": "C:\\Users\\sarat\\source\\repos\\FileClonerIterations\\FileCloner\\P2PFileSharing\\FileReceiver.cs",
+              "RelativeToolTip": "FileCloner\\P2PFileSharing\\FileReceiver.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-30T12:22:01.511Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "SenderReceiverConstants.cs",
+              "DocumentMoniker": "C:\\Users\\sarat\\source\\repos\\FileClonerIterations\\FileCloner\\P2PNetworking\\SenderReceiverConstants.cs",
+              "RelativeDocumentMoniker": "FileCloner\\P2PNetworking\\SenderReceiverConstants.cs",
+              "ToolTip": "C:\\Users\\sarat\\source\\repos\\FileClonerIterations\\FileCloner\\P2PNetworking\\SenderReceiverConstants.cs",
+              "RelativeToolTip": "FileCloner\\P2PNetworking\\SenderReceiverConstants.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-25T19:15:34.078Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "FileReceiver.cs",
+              "DocumentMoniker": "C:\\Users\\sarat\\source\\repos\\FileClonerIterations\\FileCloner\\P2PNetworking\\FileReceiver.cs",
+              "RelativeDocumentMoniker": "FileCloner\\P2PNetworking\\FileReceiver.cs",
+              "ToolTip": "C:\\Users\\sarat\\source\\repos\\FileClonerIterations\\FileCloner\\P2PNetworking\\FileReceiver.cs",
+              "RelativeToolTip": "FileCloner\\P2PNetworking\\FileReceiver.cs",
+              "ViewState": "AgIAAD8AAAAAAAAAAAAYwCsAAAAeAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-25T19:15:06.1Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "FileSender.cs",
+              "DocumentMoniker": "C:\\Users\\sarat\\source\\repos\\FileClonerIterations\\FileCloner\\P2PNetworking\\FileSender.cs",
+              "RelativeDocumentMoniker": "FileCloner\\P2PNetworking\\FileSender.cs",
+              "ToolTip": "C:\\Users\\sarat\\source\\repos\\FileClonerIterations\\FileCloner\\P2PNetworking\\FileSender.cs",
+              "RelativeToolTip": "FileCloner\\P2PNetworking\\FileSender.cs",
+              "ViewState": "AgIAAFsAAAAAAAAAAAAswIcAAABLAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-25T19:02:17.95Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\sarat\\source\\repos\\FileClonerIterations\\FileCloner\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "FileCloner\\MainWindow.xaml",
+              "ToolTip": "C:\\Users\\sarat\\source\\repos\\FileClonerIterations\\FileCloner\\MainWindow.xaml",
+              "RelativeToolTip": "FileCloner\\MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-10-24T06:35:58.065Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\sarat\\source\\repos\\FileClonerIterations\\FileCloner\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "FileCloner\\MainWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\sarat\\source\\repos\\FileClonerIterations\\FileCloner\\MainWindow.xaml.cs",
+              "RelativeToolTip": "FileCloner\\MainWindow.xaml.cs",
+              "ViewState": "AgIAAGgAAAAAAAAAAAAawHYAAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-24T06:35:56.485Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
