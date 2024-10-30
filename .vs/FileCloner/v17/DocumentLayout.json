@@ -1,25 +1,57 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\dev\\FileClonerIterations\\FileClonerIteration1\\FileCloner\\",
+  "WorkspaceRootPath": "C:\\Users\\EVANS SAMUEL BIJU\\FileCloner\\FileClonerIterations\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|c:\\dev\\filecloneriterations\\filecloneriteration1\\filecloner\\filecloner\\p2pnetworking\\filesender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|solutionrelative:filecloner\\p2pnetworking\\filesender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|c:\\users\\evans samuel biju\\filecloner\\filecloneriterations\\filecloner\\diffgenerator\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|solutionrelative:filecloner\\diffgenerator\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|c:\\dev\\filecloneriterations\\filecloneriteration1\\filecloner\\filecloner\\p2pnetworking\\filereceiver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|c:\\users\\evans samuel biju\\filecloner\\filecloneriterations\\filecloner\\diffgenerator\\atomicjsonclass.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|solutionrelative:filecloner\\diffgenerator\\atomicjsonclass.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|c:\\users\\evans samuel biju\\filecloner\\filecloneriterations\\filecloner\\diffgenerator\\filename.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|solutionrelative:filecloner\\diffgenerator\\filename.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|c:\\users\\evans samuel biju\\filecloner\\filecloneriterations\\filecloner\\p2pfilesharing\\fileclonerheaders.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|solutionrelative:filecloner\\p2pfilesharing\\fileclonerheaders.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|c:\\users\\evans samuel biju\\filecloner\\filecloneriterations\\filecloner\\p2pfilesharing\\senderreceiverconstants.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|solutionrelative:filecloner\\p2pfilesharing\\senderreceiverconstants.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|c:\\users\\evans samuel biju\\filecloner\\filecloneriterations\\filecloner\\p2pfilesharing\\filereceiver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|solutionrelative:filecloner\\p2pfilesharing\\filereceiver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|c:\\users\\evans samuel biju\\filecloner\\filecloneriterations\\filecloner\\p2pfilesharing\\fileloader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|solutionrelative:filecloner\\p2pfilesharing\\fileloader.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|c:\\users\\evans samuel biju\\filecloner\\filecloneriterations\\filecloner\\p2pnetworking\\filepuller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|solutionrelative:filecloner\\p2pnetworking\\filepuller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|c:\\users\\evans samuel biju\\filecloner\\filecloneriterations\\filecloner\\p2pnetworking\\filereceiver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|solutionrelative:filecloner\\p2pnetworking\\filereceiver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|c:\\dev\\filecloneriterations\\filecloneriteration1\\filecloner\\filecloner\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|c:\\users\\evans samuel biju\\filecloner\\filecloneriterations\\filecloner\\p2pnetworking\\filesender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|solutionrelative:filecloner\\p2pnetworking\\filesender.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|c:\\users\\evans samuel biju\\filecloner\\filecloneriterations\\filecloner\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|solutionrelative:filecloner\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|c:\\dev\\filecloneriterations\\filecloneriteration1\\filecloner\\filecloner\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "AbsoluteMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|c:\\users\\evans samuel biju\\filecloner\\filecloneriterations\\filecloner\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|solutionrelative:filecloner\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|c:\\dev\\filecloneriterations\\filecloneriteration1\\filecloner\\filecloner\\p2pnetworking\\senderreceiverconstants.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|c:\\users\\evans samuel biju\\filecloner\\filecloneriterations\\filecloner\\p2pnetworking\\senderreceiverconstants.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E2A014C0-3984-4E35-ACC1-2EDC0AEC99BE}|FileCloner\\FileCloner.csproj|solutionrelative:filecloner\\p2pnetworking\\senderreceiverconstants.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -34,28 +66,139 @@
           "Children": [
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "SenderReceiverConstants.cs",
-              "DocumentMoniker": "C:\\dev\\FileClonerIterations\\FileClonerIteration1\\FileCloner\\FileCloner\\P2PNetworking\\SenderReceiverConstants.cs",
-              "RelativeDocumentMoniker": "FileCloner\\P2PNetworking\\SenderReceiverConstants.cs",
-              "ToolTip": "C:\\dev\\FileClonerIterations\\FileClonerIteration1\\FileCloner\\FileCloner\\P2PNetworking\\SenderReceiverConstants.cs",
-              "RelativeToolTip": "FileCloner\\P2PNetworking\\SenderReceiverConstants.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAVAAAAAAAAAA==",
+              "DocumentIndex": 2,
+              "Title": "FileName.cs",
+              "DocumentMoniker": "C:\\Users\\EVANS SAMUEL BIJU\\FileCloner\\FileClonerIterations\\FileCloner\\DiffGenerator\\FileName.cs",
+              "RelativeDocumentMoniker": "FileCloner\\DiffGenerator\\FileName.cs",
+              "ToolTip": "C:\\Users\\EVANS SAMUEL BIJU\\FileCloner\\FileClonerIterations\\FileCloner\\DiffGenerator\\FileName.cs",
+              "RelativeToolTip": "FileCloner\\DiffGenerator\\FileName.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-25T19:15:34.078Z",
+              "WhenOpened": "2024-10-30T06:31:06.414Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
+              "Title": "AtomicJsonClass.cs",
+              "DocumentMoniker": "C:\\Users\\EVANS SAMUEL BIJU\\FileCloner\\FileClonerIterations\\FileCloner\\DiffGenerator\\AtomicJsonClass.cs",
+              "RelativeDocumentMoniker": "FileCloner\\DiffGenerator\\AtomicJsonClass.cs",
+              "ToolTip": "C:\\Users\\EVANS SAMUEL BIJU\\FileCloner\\FileClonerIterations\\FileCloner\\DiffGenerator\\AtomicJsonClass.cs",
+              "RelativeToolTip": "FileCloner\\DiffGenerator\\AtomicJsonClass.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAABCAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-30T06:30:11.318Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\EVANS SAMUEL BIJU\\FileCloner\\FileClonerIterations\\FileCloner\\DiffGenerator\\Program.cs",
+              "RelativeDocumentMoniker": "FileCloner\\DiffGenerator\\Program.cs",
+              "ToolTip": "C:\\Users\\EVANS SAMUEL BIJU\\FileCloner\\FileClonerIterations\\FileCloner\\DiffGenerator\\Program.cs",
+              "RelativeToolTip": "FileCloner\\DiffGenerator\\Program.cs",
+              "ViewState": "AgIAADQAAAAAAAAAAAAQwD4AAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-30T06:28:29.03Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "SenderReceiverConstants.cs",
+              "DocumentMoniker": "C:\\Users\\EVANS SAMUEL BIJU\\FileCloner\\FileClonerIterations\\FileCloner\\P2PFileSharing\\SenderReceiverConstants.cs",
+              "RelativeDocumentMoniker": "FileCloner\\P2PFileSharing\\SenderReceiverConstants.cs",
+              "ToolTip": "C:\\Users\\EVANS SAMUEL BIJU\\FileCloner\\FileClonerIterations\\FileCloner\\P2PFileSharing\\SenderReceiverConstants.cs",
+              "RelativeToolTip": "FileCloner\\P2PFileSharing\\SenderReceiverConstants.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-30T06:22:38.29Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "FileReceiver.cs",
-              "DocumentMoniker": "C:\\dev\\FileClonerIterations\\FileClonerIteration1\\FileCloner\\FileCloner\\P2PNetworking\\FileReceiver.cs",
+              "DocumentMoniker": "C:\\Users\\EVANS SAMUEL BIJU\\FileCloner\\FileClonerIterations\\FileCloner\\P2PFileSharing\\FileReceiver.cs",
+              "RelativeDocumentMoniker": "FileCloner\\P2PFileSharing\\FileReceiver.cs",
+              "ToolTip": "C:\\Users\\EVANS SAMUEL BIJU\\FileCloner\\FileClonerIterations\\FileCloner\\P2PFileSharing\\FileReceiver.cs",
+              "RelativeToolTip": "FileCloner\\P2PFileSharing\\FileReceiver.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-30T06:22:34.97Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "FileLoader.cs",
+              "DocumentMoniker": "C:\\Users\\EVANS SAMUEL BIJU\\FileCloner\\FileClonerIterations\\FileCloner\\P2PFileSharing\\FileLoader.cs",
+              "RelativeDocumentMoniker": "FileCloner\\P2PFileSharing\\FileLoader.cs",
+              "ToolTip": "C:\\Users\\EVANS SAMUEL BIJU\\FileCloner\\FileClonerIterations\\FileCloner\\P2PFileSharing\\FileLoader.cs",
+              "RelativeToolTip": "FileCloner\\P2PFileSharing\\FileLoader.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-30T06:22:32.287Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "FileClonerHeaders.cs",
+              "DocumentMoniker": "C:\\Users\\EVANS SAMUEL BIJU\\FileCloner\\FileClonerIterations\\FileCloner\\P2PFileSharing\\FileClonerHeaders.cs",
+              "RelativeDocumentMoniker": "FileCloner\\P2PFileSharing\\FileClonerHeaders.cs",
+              "ToolTip": "C:\\Users\\EVANS SAMUEL BIJU\\FileCloner\\FileClonerIterations\\FileCloner\\P2PFileSharing\\FileClonerHeaders.cs",
+              "RelativeToolTip": "FileCloner\\P2PFileSharing\\FileClonerHeaders.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAA0AAABBAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-30T06:18:24.782Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "FilePuller.cs",
+              "DocumentMoniker": "C:\\Users\\EVANS SAMUEL BIJU\\FileCloner\\FileClonerIterations\\FileCloner\\P2PNetworking\\FilePuller.cs",
+              "RelativeDocumentMoniker": "FileCloner\\P2PNetworking\\FilePuller.cs",
+              "ToolTip": "C:\\Users\\EVANS SAMUEL BIJU\\FileCloner\\FileClonerIterations\\FileCloner\\P2PNetworking\\FilePuller.cs",
+              "RelativeToolTip": "FileCloner\\P2PNetworking\\FilePuller.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-30T06:17:17.807Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{e1b7d1f8-9b3c-49b1-8f4f-bfc63a88835d}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "SenderReceiverConstants.cs",
+              "DocumentMoniker": "C:\\Users\\EVANS SAMUEL BIJU\\FileCloner\\FileClonerIterations\\FileCloner\\P2PNetworking\\SenderReceiverConstants.cs",
+              "RelativeDocumentMoniker": "FileCloner\\P2PNetworking\\SenderReceiverConstants.cs",
+              "ToolTip": "C:\\Users\\EVANS SAMUEL BIJU\\FileCloner\\FileClonerIterations\\FileCloner\\P2PNetworking\\SenderReceiverConstants.cs",
+              "RelativeToolTip": "FileCloner\\P2PNetworking\\SenderReceiverConstants.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-25T19:15:34.078Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "FileReceiver.cs",
+              "DocumentMoniker": "C:\\Users\\EVANS SAMUEL BIJU\\FileCloner\\FileClonerIterations\\FileCloner\\P2PNetworking\\FileReceiver.cs",
               "RelativeDocumentMoniker": "FileCloner\\P2PNetworking\\FileReceiver.cs",
-              "ToolTip": "C:\\dev\\FileClonerIterations\\FileClonerIteration1\\FileCloner\\FileCloner\\P2PNetworking\\FileReceiver.cs",
+              "ToolTip": "C:\\Users\\EVANS SAMUEL BIJU\\FileCloner\\FileClonerIterations\\FileCloner\\P2PNetworking\\FileReceiver.cs",
               "RelativeToolTip": "FileCloner\\P2PNetworking\\FileReceiver.cs",
               "ViewState": "AgIAACEAAAAAAAAAAAApwCsAAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -64,11 +207,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 9,
               "Title": "FileSender.cs",
-              "DocumentMoniker": "C:\\dev\\FileClonerIterations\\FileClonerIteration1\\FileCloner\\FileCloner\\P2PNetworking\\FileSender.cs",
+              "DocumentMoniker": "C:\\Users\\EVANS SAMUEL BIJU\\FileCloner\\FileClonerIterations\\FileCloner\\P2PNetworking\\FileSender.cs",
               "RelativeDocumentMoniker": "FileCloner\\P2PNetworking\\FileSender.cs",
-              "ToolTip": "C:\\dev\\FileClonerIterations\\FileClonerIteration1\\FileCloner\\FileCloner\\P2PNetworking\\FileSender.cs",
+              "ToolTip": "C:\\Users\\EVANS SAMUEL BIJU\\FileCloner\\FileClonerIterations\\FileCloner\\P2PNetworking\\FileSender.cs",
               "RelativeToolTip": "FileCloner\\P2PNetworking\\FileSender.cs",
               "ViewState": "AgIAAHYAAAAAAAAAAAAswIYAAAA5AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
@@ -77,28 +220,26 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 11,
               "Title": "MainWindow.xaml",
-              "DocumentMoniker": "C:\\dev\\FileClonerIterations\\FileClonerIteration1\\FileCloner\\FileCloner\\MainWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\EVANS SAMUEL BIJU\\FileCloner\\FileClonerIterations\\FileCloner\\MainWindow.xaml",
               "RelativeDocumentMoniker": "FileCloner\\MainWindow.xaml",
-              "ToolTip": "C:\\dev\\FileClonerIterations\\FileClonerIteration1\\FileCloner\\FileCloner\\MainWindow.xaml",
+              "ToolTip": "C:\\Users\\EVANS SAMUEL BIJU\\FileCloner\\FileClonerIterations\\FileCloner\\MainWindow.xaml",
               "RelativeToolTip": "FileCloner\\MainWindow.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
-              "WhenOpened": "2024-10-24T06:35:58.065Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-24T06:35:58.065Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 10,
               "Title": "MainWindow.xaml.cs",
-              "DocumentMoniker": "C:\\dev\\FileClonerIterations\\FileClonerIteration1\\FileCloner\\FileCloner\\MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\EVANS SAMUEL BIJU\\FileCloner\\FileClonerIterations\\FileCloner\\MainWindow.xaml.cs",
               "RelativeDocumentMoniker": "FileCloner\\MainWindow.xaml.cs",
-              "ToolTip": "C:\\dev\\FileClonerIterations\\FileClonerIteration1\\FileCloner\\FileCloner\\MainWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\EVANS SAMUEL BIJU\\FileCloner\\FileClonerIterations\\FileCloner\\MainWindow.xaml.cs",
               "RelativeToolTip": "FileCloner\\MainWindow.xaml.cs",
               "ViewState": "AgIAAGgAAAAAAAAAAAAawHYAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-24T06:35:56.485Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-24T06:35:56.485Z"
             }
           ]
         }

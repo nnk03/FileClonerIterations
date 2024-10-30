@@ -15,14 +15,14 @@ public class FileName
     public string RelativeFileName { get; private set; }
     public DateTime Date { get; private set; } // Keep the setter private
 
-    public string IP_Address;
+    public string IPAddress;
     public int Port { get; private set; }
     // Constructor to initialize file name and date
     public FileName(string relativePath, DateTime date, string iP_Address, int port)
     {
         RelativeFileName = relativePath;
         Date = date;
-        IP_Address = iP_Address;
+        IPAddress = iP_Address;
         Port = port;
     }
 

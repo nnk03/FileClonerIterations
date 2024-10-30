@@ -12,6 +12,6 @@ namespace FileCloner.DiffGenerator;
 
 public class AtomicJsonClass
 {
-    public string file_name { get; set; }  // Matches the JSON key
-    public DateTime timestamp { get; set; } // Matches the JSON key
+    public string File_name { get; set; }  // Matches the JSON key
+    public DateTime Timestamp { get; set; } // Matches the JSON key
 }
