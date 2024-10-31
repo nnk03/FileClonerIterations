@@ -10,12 +10,7 @@ namespace UnitTests
         public void LoggerTest()
         {
             FileClonerLogger logger = new("UnitTests", true);
-        }
-
-        [TestMethod]
-        public void TestMethod2()
-        {
-            FileCloner fileCloner = new();
+            logger.Log("HELLO WORLD");
         }
     }
 }

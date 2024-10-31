@@ -24,6 +24,7 @@ public class FileClonerLogger
     /// <param name="moduleName"></param>
     public FileClonerLogger(string moduleName, bool writeToFile)
     {
+        Debug.WriteLine("Logger Construction");
         _moduleName = moduleName;
         _syncLock = new();
         _writeToFile = writeToFile;
@@ -36,12 +37,31 @@ public class FileClonerLogger
             }
             lock (_syncLock)
             {
-                File.WriteAllText(LogFile, string.Empty);
+                File.WriteAllText(LogFile, $"{_moduleName} : Logging Started\n");
             }
         }
         catch (Exception ex)
         {
-            Trace.WriteLine("FILECLONERTRACE : " + ex.Message);
+            Trace.WriteLine($"{_moduleName} : " + ex.Message);
+        }
+    }
+
+    ~FileClonerLogger()
+    {
+        try
+        {
+            if (!File.Exists(LogFile))
+            {
+                File.Create(LogFile).Close();
+            }
+            lock (_syncLock)
+            {
+                File.WriteAllText(LogFile, $"{_moduleName} : Logging Ended\n");
+            }
+        }
+        catch (Exception ex)
+        {
+            Trace.WriteLine($"{_moduleName} : " + ex.Message);
         }
 
     }
@@ -53,29 +73,28 @@ public class FileClonerLogger
     /// <param name="memberName"></param>
     /// <param name="filePath"></param>
     /// <param name="lineNumber"></param>
-    //public void Log(string message,
-    //                [CallerMemberName] string memberName = "",
-    //                [CallerFilePath] string filePath = "",
-    //                [CallerLineNumber] int lineNumber = 0)
-    //{
-    //    // string moduleName = System.IO.Path.GetFileNameWithoutExtension(filePath);
-    //    Trace.WriteLine($"{_moduleName}:{filePath}->{memberName}->{lineNumber} :: {message}");
-    //}
-
-    public void Log(string message)
+    public void Log(string message,
+                    [CallerMemberName] string memberName = "",
+                    [CallerFilePath] string filePath = "",
+                    [CallerLineNumber] int lineNumber = 0)
     {
-        string logToBeWritten = $"{message}";
+        string logToBeWritten = $"{_moduleName}:{filePath}->{memberName}->{lineNumber} :: {message}";
+        Write(logToBeWritten);
+    }
+
+    private void Write(string logToBeWritten)
+    {
         if (_writeToFile)
         {
             lock (_syncLock)
             {
                 try
                 {
-                    File.AppendAllText(LogFile, logToBeWritten);
+                    File.AppendAllText(LogFile, logToBeWritten + "\n");
                 }
                 catch (Exception ex)
                 {
-                    Trace.WriteLine($"FILECLONERTRACE : {ex.Message}");
+                    Trace.WriteLine($"FILECLONERTRACE : {ex.Message}\n");
                 }
             }
         }
