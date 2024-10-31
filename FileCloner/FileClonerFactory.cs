@@ -21,4 +21,10 @@ public class FileClonerFactory
         _fileSender = new FileSender();
         _fileReceiver = new FileReceiver();
     }
+
+    ~FileClonerFactory()
+    {
+        _fileReceiver.StopFileReceiver();
+        _fileSender.StopFileSender();
+    }
 }

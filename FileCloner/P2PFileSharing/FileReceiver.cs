@@ -334,4 +334,9 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
         return false;
     }
 
+    public void StopFileReceiver()
+    {
+        _fileReceiverServer.Stop();
+    }
+
 }

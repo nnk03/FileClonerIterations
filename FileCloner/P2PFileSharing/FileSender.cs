@@ -150,4 +150,9 @@ public class FileSender : FileClonerHeaders, INotificationHandler
         return GetMessage(_myServerAddress, header, message);
     }
 
+    public void StopFileSender()
+    {
+        _fileServer.Stop();
+    }
+
 }
