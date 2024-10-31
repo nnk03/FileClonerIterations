@@ -22,6 +22,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
 
     // this lock is necessary when writing to files
     private object _fileWriteLock;
+    private Dictionary<string, object> _syncLockForSavingResponse;
 
     private string _myServerAddress;
 
@@ -34,7 +35,6 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
     private const string ReceiverConfigFilePath = ".\\requestConfig.json";
     private const string ResponseOfRequestConfigFilePath = ".\\responseOfRequestConfig.json";
     private const string RequestToSendFilePath = ".\\requestToSend.json";
-    private object _syncLockForSavingResponse = new();
 
     private List<string> _requestFilesPathList;
 
@@ -42,6 +42,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
     {
         _fileWriteLock = new();
         _requestFilesPathList = new();
+        _syncLockForSavingResponse = new();
 
         // for each file to be received from a particular device D
         // creates a new FileReceiver which handles the receiving and saving of the particular file
@@ -171,15 +172,25 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
     private void SaveResponse(string data, string fromWhichServer)
     {
         string saveFileName = $"{fromWhichServer}.json";
+
+        if (!_syncLockForSavingResponse.ContainsKey(saveFileName))
+        {
+            _syncLockForSavingResponse[saveFileName] = new();
+        }
+        object lockToSaveResponse = _syncLockForSavingResponse[saveFileName];
+
         if (!CreateAndCloseFile(saveFileName))
         {
             _logger.Log($"Not able to create file {saveFileName}");
             return;
         }
-        // data is serialized json
-        // saving it in the fileName saveFileName
 
-        File.WriteAllText(saveFileName, data);
+        lock (lockToSaveResponse)
+        {
+            // data is serialized json
+            // saving it in the fileName saveFileName
+            File.WriteAllText(saveFileName, data);
+        }
     }
 
 
