@@ -24,6 +24,9 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
     // and then request through each socket about the availability of files
     private const string CurrentModuleName = "FileReceiver";
     private Logger.Logger _logger = new(CurrentModuleName);
+    private Dictionary<string, TcpClient> _clientDictionary = new();
+    private Dictionary<string, TcpClient> _clientIdToSocket;
+    private object _syncLock = new();
 
     // private CommunicatorClient _fileReceiver;
     // CommunicatorServer is much more useful than Communicator Client??
@@ -46,26 +49,34 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
     private const string ReceiverConfigTimeStampKey = "timeStamp";
     public FileReceiver()
     {
+        _syncLock = new();
+        _clientDictionary = new();
+        _clientIdToSocket = new();
+        _logger = new(CurrentModuleName);
+
         // for each file to be received from a particular device D
         // creates a new FileReceiver which handles the receiving and saving of the particular file
         // _fileReceiver = new CommunicatorClient();
         _fileReceiverServer = new CommunicatorServer();
         _myServerAddress = _fileReceiverServer.Start();
+        _myServerAddress = _myServerAddress.Replace(':', '_');
+        _clientIdToSocket = _fileReceiverServer.GetClientList();
 
         // Subscribe for messages with module name as "FileReceiver"
         // _fileReceiver.Subscribe(CurrentModuleName, this, false);
         _fileReceiverServer.Subscribe(CurrentModuleName, this, false);
 
-        // broadcast the message of getting all IP
-        _fileReceiverServer.Send(
-            GetMessage(GetAllIPPortHeader, ""),
-            CurrentModuleName, null);
+        // no need of broadcast the message of getting all IP
+        //_fileReceiverServer.Send(
+        //    GetMessage(GetAllIPPortHeader, ""),
+        //    CurrentModuleName, null);
 
         CreateAndCloseFile(ReceiverConfigFilePath);
 
 
         // when starting, read the config file
         SaveFileRequests();
+
     }
 
     /// <summary>
@@ -74,20 +85,38 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
     /// <param name="serializedData"></param>
     public void OnDataReceived(string serializedData)
     {
+        // after the header contains the serialized data
+        string[] serializedDataList = serializedData.Split(':', MessageSplitLength);
+        string header = serializedDataList[HeaderIndex];
+        string sendToAddress = serializedDataList[AddressIndex];
+        string clientId = GetClientId(sendToAddress);
+
         if (serializedData.StartsWith(AckFileRequestHeader))
         {
-            // find the IP address and port number of the machine
-            // now assuming its localhost_9999
-            // need to find out how to get the server address
-            string[] serializedDataList = serializedData.Split(':', MessageSplitLength);
-
-            string fromWhichServer = serializedDataList[AddressIndex];
-            string serializedJsonData = serializedData.Split(':', 2)[MessageIndex];
+            string serializedJsonData = serializedDataList[MessageIndex];
 
             Thread saveResponseThread = new Thread(() => {
-                SaveResponse(serializedJsonData, fromWhichServer);
+                SaveResponse(serializedJsonData, sendToAddress);
             });
             saveResponseThread.Start();
+        }
+        else if (serializedData.StartsWith(AckCloneFilesHeader))
+        {
+            // format is AckCloneFilesHeader:filePath:count:chunk
+        }
+        else if (serializedData.StartsWith(RequestOneFileHeader))
+        {
+            Thread requestFileThread = new Thread(() => {
+                RequestFileFromDevices(serializedDataList[MessageIndex]);
+            });
+            requestFileThread.Start();
+        }
+        else if (serializedData.StartsWith(AckCloneFilesHeader))
+        {
+            Thread receiveFilesThroughNetwork = new Thread(() => {
+                ReceiveFileOverNetwork(serializedData[MessageIndex]); // put the corresponding save file path over here
+            });
+            receiveFilesThroughNetwork.Start();
         }
 
     }
@@ -107,6 +136,55 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
             GetMessage(FileRequestHeader, sendFileRequests),
             CurrentModuleName, null);
     }
+
+    public void RequestFileFromDevices(string jsonRequest)
+    {
+        List<string> serializedDataRequest = _serializer.Deserialize<List<string>>(jsonRequest);
+        //Assuming that the json file consists of data which is of the form 
+        //fileName:address
+        for(string s in serializedDataRequest)
+        {
+
+            _fileReceiverServer.Send(
+                GetMessage(CloneFilesHeader, s.Split(':')[0]),
+                CurrentModuleName, GetClientId(s.Split(':')[1])
+                );
+        }
+    }
+
+ 
+
+    private void ReceiveFileOverNetwork(string data)
+    {
+        try
+        {
+            string filePath = data.Split(':')[0];
+            string count = data.Split(':')[1];
+            string dataChunk = data.Split(':')[2];
+
+            if ((int)count == 0) 
+            {
+                using (StreamWriter writer = new StreamWriter(filePath, false)) //false means that it will overwrite onto the file
+                {
+                    writer.Write(data);
+                }
+            }
+            else
+            {
+                using (StreamWriter writer = new StreamWriter(filePath, true)) // true implies that it will get appended
+                {
+                    writer.Write(data);
+                }
+            }
+            Trace.WriteLine($"Chunk number {count} written succesfully onto the file.");
+        }
+        catch(Exception e) 
+        {
+            Trace.WriteLine(e);
+        }
+    }
+
+
 
     /// <summary>
     /// Saves the response from the file Server `fromWhichServer` and saves it
@@ -130,10 +208,10 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
         File.WriteAllText(saveFileName, data);
     }
 
-    public void CloneFile(string filePath, string savePath, string fileServerIP, string fileServerPort)
-    {
-        // get the file from the fileServer and save it in savePath
-    }
+    //public void CloneFile(string filePath, string savePath, string fileServerIP, string fileServerPort)
+    //{
+    //    // get the file from the fileServer and save it in savePath
+    //}
 
     /// <summary>
     /// Helper function to create and close the file
@@ -233,4 +311,8 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
         return GetMessage(_myServerAddress, header, message);
     }
 
-}
+
+
+
+
+

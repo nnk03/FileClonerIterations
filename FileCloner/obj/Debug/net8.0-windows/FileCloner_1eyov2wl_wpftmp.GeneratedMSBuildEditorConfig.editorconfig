@@ -1,0 +1,18 @@
+is_global = true
+build_property.TargetFramework = net8.0-windows
+build_property.TargetPlatformMinVersion = 7.0
+build_property.UsingMicrosoftNETSdkWeb = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+<<<<<<< HEAD:obj/Debug/net8.0/SoftwareEngineeringGroupProject.GeneratedMSBuildEditorConfig.editorconfig
+build_property.RootNamespace = SoftwareEngineeringGroupProject
+build_property.ProjectDir = C:\Users\sarat\source\repos\FileClonerIterations\
+=======
+build_property.RootNamespace = FileCloner_1eyov2wl_wpftmp
+build_property.ProjectDir = C:\dev\FileClonerIterations\FileClonerIteration1\FileCloner\FileCloner\
+>>>>>>> 0cb5e80288adc35387be94c00fcd54e4303de14c:FileCloner/obj/Debug/net8.0-windows/FileCloner_1eyov2wl_wpftmp.GeneratedMSBuildEditorConfig.editorconfig
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 

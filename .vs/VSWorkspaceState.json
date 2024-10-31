@@ -1,0 +1,10 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\FileCloner",
+    "\\FileCloner\\P2PFileSharing",
+    "\\Network\\Communication"
+  ],
+  "SelectedNode": "\\FileCloner\\P2PFileSharing\\FileReceiver.cs",
+  "PreviewInSolutionExplorer": false
+}

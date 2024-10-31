@@ -15,16 +15,8 @@ namespace SoftwareEngineeringGroupProject.FileCloner.P2PFileSharing;
 
 public class FileSender : FileClonerHeaders, INotificationHandler
 {
-    private object _syncLock = new();
-    private Dictionary<string, TcpClient> _clientDictionary = new();
-
     private const string CurrentModule = "FileSender";
-    private Logger.Logger _logger = new(CurrentModule);
-
     private CommunicatorServer _fileServer;
-    // private const int FileServerPort = (int)SenderReceiverConstants.FileReceiverPortNumber;
-    private Dictionary<string, TcpClient> _clientIdToSocket;
-
 
     private const string SenderConfigFilePathKey = "filePath";
     private const string SenderConfigSavePathKey = "savePath";
@@ -38,9 +30,15 @@ public class FileSender : FileClonerHeaders, INotificationHandler
     // get clientIdToSocket Dictionary
     public FileSender()
     {
+        _syncLock = new();
+        _clientDictionary = new();
+        _clientIdToSocket = new();
+        _logger = new(CurrentModule);
+
         // create a file server in each device to serve the files
         _fileServer = new CommunicatorServer();
         _myServerAddress = _fileServer.Start();
+        _myServerAddress = _myServerAddress.Replace(':', '_');
 
         // subscribe to messages with module name as "FileSender"
         _fileServer.Subscribe("FileSender", this, false);
@@ -51,10 +49,14 @@ public class FileSender : FileClonerHeaders, INotificationHandler
 
     public void OnDataReceived(string serializedData)
     {
-        if (serializedData.StartsWith(FileRequestHeader))
+        // after the header contains the serialized data
+        string[] serializedDataList = serializedData.Split(':', MessageSplitLength);
+        string header = serializedDataList[HeaderIndex];
+        string sendToAddress = serializedDataList[AddressIndex];
+        string clientId = GetClientId(sendToAddress);
+
+        if (header == FileRequestHeader)
         {
-            // after the header contains the serialized data
-            string[] serializedDataList = serializedData.Split(':', MessageSplitLength);
 
             string serializedRequest = serializedDataList[MessageIndex];
             List<string> fileRequests = _serializer.Deserialize<List<string>>(serializedRequest);
@@ -90,104 +92,53 @@ public class FileSender : FileClonerHeaders, INotificationHandler
             //    fileDataList, new JsonSerializerOptions { WriteIndented = true }
             //);
 
-            // currently assuming its localhost_8888
-
-            string sendToAddress = serializedDataList[AddressIndex];
-            string clientId = GetClientId(sendToAddress);
-
             _fileServer.Send(
                 GetMessage(AckFileRequestHeader, jsonResponse),
                 CurrentModule, clientId);
         }
-
-
-    }
-
-    /// <summary>
-    /// Adds the key, value pair (address, socket) to the 
-    /// `clientDictionary`
-    /// </summary>
-    /// <param name="socket"></param>
-    public void OnClientJoined(TcpClient socket)
-    {
-        string address = GetAddressFromSocket(socket);
-        _logger.Log($"Client Joined : {address}");
-        lock (_syncLock)
+        else if (header == CloneFilesHeader)
         {
-            _clientDictionary.Add(address, socket);
+            string filePath = serializedDataList[MessageIndex];
+            // take the contents of the file path and send it in chunks
+
+            Thread sendFileThread = new(() => {
+                SendFileOverNetwork(filePath, clientId);
+            });
+            sendFileThread.Start();
         }
+
     }
 
-    /// <summary>
-    /// if clientId key is present in the dictionary, remove it
-    /// </summary>
-    /// <param name="clientId"></param>
-    public void OnClientLeft(string clientId)
+    private void SendFileOverNetwork(string filePath, string clientId)
     {
-        lock (_syncLock)
+        try
         {
-            if (_clientDictionary.ContainsKey(clientId))
+            // Open the file with a StreamReader
+            using StreamReader reader = new StreamReader(filePath);
+            char[] buffer = new char[PacketSize];
+            int charsRead;
+
+            int count = 0;
+
+            // Read the file in chunks
+            while ((charsRead = reader.Read(buffer, 0, buffer.Length)) > 0)
             {
-                _clientDictionary.Remove(clientId);
+                // Convert the characters read into a string
+                string chunk = new string(buffer, 0, charsRead);
+
+                // Send the chunk over the network
+                _fileServer.Send(
+                    GetMessage(AckCloneFilesHeader, $"{filePath}:{count}:{chunk}"),
+                    CurrentModule, clientId);
+                ++count;
             }
         }
-    }
-
-    /// <summary>
-    /// Gets the client ID from the dictionary _clientIdToSocket
-    /// given the TcpClient `socket`
-    /// </summary>
-    /// <param name="socket"></param>
-    /// <returns></returns>
-    private string GetClientId(TcpClient socket)
-    {
-        foreach (KeyValuePair<string, TcpClient> kvPair in _clientIdToSocket)
+        catch (Exception ex)
         {
-            if (kvPair.Value == socket)
-            {
-                return kvPair.Key;
-            }
+            // Handle exceptions (file not found, network issues, etc.)
+            Console.WriteLine($"Error sending file: {ex.Message}");
         }
-        return "";
-    }
 
-    /// <summary>
-    /// Gets the client ID from the dictionary _clientIdToSocket
-    /// given the string `address`
-    /// </summary>
-    /// <param name="socket"></param>
-    /// <returns></returns>
-    private string GetClientId(string address)
-    {
-        foreach (KeyValuePair<string, TcpClient> kvPair in _clientIdToSocket)
-        {
-            TcpClient socket = kvPair.Value;
-            if (GetAddressFromSocket(socket) == address)
-            {
-                return kvPair.Key;
-            }
-        }
-        return "";
-    }
-
-    /// <summary>
-    /// Gets the Concatenated address from the socket
-    /// </summary>
-    /// <param name="socket"></param>
-    /// <returns></returns>
-    private string GetAddressFromSocket(TcpClient socket)
-    {
-        IPEndPoint? remoteEndPoint = (IPEndPoint?)socket.Client.RemoteEndPoint;
-        if (remoteEndPoint == null)
-        {
-            return "";
-        }
-        string ipAddress = remoteEndPoint.Address.ToString();
-        string port = remoteEndPoint.Port.ToString();
-
-        // using underscores since apparently fileNames cannot have :
-        string address = GetConcatenatedAddress(ipAddress, port);
-        return address;
     }
 
     /// <summary>
