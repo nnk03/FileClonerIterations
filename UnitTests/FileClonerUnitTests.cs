@@ -6,7 +6,7 @@ using SoftwareEngineeringGroupProject.FileCloner.Logger;
 namespace UnitTests
 {
     [TestClass]
-    public class UnitTest1
+    public class FileClonerUnitTests
     {
         [TestMethod]
         public void TestMethod1()
