@@ -75,7 +75,17 @@ public class FileSender : FileClonerHeaders, INotificationHandler
             char[] buffer = new char[PacketSize];
             int charsRead;
 
-            int count = 0;
+            FileInfo fileInfo = new(filePath);
+            // get the size of file in bytes
+            long totalFileSize = fileInfo.Length;
+
+            long count = 0;
+            long numberOfTransmissionsRequired = 
+                (long)Math.Ceiling((double)totalFileSize / (double)buffer.Length);
+
+            _logger.Log(
+                $"Number of transmissions required for file {filePath} is {numberOfTransmissionsRequired}"
+            );
 
             // Read the file in chunks
             while ((charsRead = reader.Read(buffer, 0, buffer.Length)) > 0)
@@ -85,7 +95,7 @@ public class FileSender : FileClonerHeaders, INotificationHandler
 
                 // Send the chunk over the network
                 _fileServer.Send(
-                    GetMessage(AckCloneFilesHeader, $"{filePath}:{count}:{chunk}"),
+                    GetMessage(AckCloneFilesHeader, $"{filePath}:{count}/{numberOfTransmissionsRequired}:{chunk}"),
                     CurrentModule, clientId);
                 ++count;
             }

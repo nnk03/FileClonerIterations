@@ -151,10 +151,21 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
         }
         else if (serializedData.StartsWith(AckCloneFilesHeader))
         {
+            string data = serializedDataList[MessageIndex];
+
+            // format of data here is filePath:count:chunk
+            // the below will help in determining the percentage of file Transfer completed
+            string[] dataList = data.Split(':', 3);
+            string filePath = dataList[0];
+            string[] countByTotalNumberOfTransmissions = dataList[1].Split('/', 2);
+            long count = long.Parse(countByTotalNumberOfTransmissions[0]);
+            long numberOfTransmissionsRequired =
+                long.Parse(countByTotalNumberOfTransmissions[1]);
+
             // format is Address:AckCloneFilesHeader:filePath:count:chunk
             Thread receiveFilesThroughNetwork = new Thread(() => {
                 // put the corresponding save file path over here
-                ReceiveFileOverNetwork(serializedDataList[MessageIndex]);
+                ReceiveFileOverNetwork(data);
             });
             receiveFilesThroughNetwork.Start();
         }
@@ -201,7 +212,11 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
             // format of data here is filePath:count:chunk
             string[] dataList = data.Split(':', 3);
             string filePath = dataList[0];
-            int count = int.Parse(dataList[1]);
+            string[] countByTotalNumberOfTransmissions = dataList[1].Split('/', 2);
+            long count = long.Parse(countByTotalNumberOfTransmissions[0]);
+            long numberOfTransmissionsRequired =
+                long.Parse(countByTotalNumberOfTransmissions[1]);
+
             string chunk = dataList[2];
 
             if (count == 0)
