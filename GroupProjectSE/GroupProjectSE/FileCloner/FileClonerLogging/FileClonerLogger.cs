@@ -15,7 +15,8 @@ public class FileClonerLogger
 {
     private string _moduleName;
     private object _syncLock;
-    private const string LogFile = ".\\FileClonerTrace.log";
+    private string _logDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "GroupProjectSE", "FileClonerLogs");
+    private string _logFile = ".\\FileClonerTrace.log";
     private bool _writeToFile;
 
     /// <summary>
@@ -31,18 +32,31 @@ public class FileClonerLogger
 
         try
         {
-            if (!File.Exists(LogFile))
+            if (!Directory.Exists(_logDirectory))
             {
-                File.Create(LogFile).Close();
+                Directory.CreateDirectory(_logDirectory);
+            }
+            _logFile = $"{_logDirectory}\\FileClonerTrace.log";
+        }
+        catch (Exception ex)
+        {
+            Trace.WriteLine(ex.Message + "\n");
+        }
+
+        try
+        {
+            if (!File.Exists(_logFile))
+            {
+                File.Create(_logFile).Close();
             }
             lock (_syncLock)
             {
-                File.WriteAllText(LogFile, $"{_moduleName} : Logging Started\n");
+                File.WriteAllText(_logFile, $"{_moduleName} : Logging Started\n");
             }
         }
         catch (Exception ex)
         {
-            Trace.WriteLine($"{_moduleName} : " + ex.Message);
+            Trace.WriteLine($"{_moduleName} : " + ex.Message + "\n");
         }
     }
 
@@ -50,18 +64,18 @@ public class FileClonerLogger
     {
         try
         {
-            if (!File.Exists(LogFile))
+            if (!File.Exists(_logFile))
             {
-                File.Create(LogFile).Close();
+                File.Create(_logFile).Close();
             }
             lock (_syncLock)
             {
-                File.WriteAllText(LogFile, $"{_moduleName} : Logging Ended\n");
+                File.WriteAllText(_logFile, $"{_moduleName} : Logging Ended\n");
             }
         }
         catch (Exception ex)
         {
-            Trace.WriteLine($"{_moduleName} : " + ex.Message);
+            Trace.WriteLine($"{_moduleName} : " + ex.Message + "\n");
         }
 
     }
@@ -90,7 +104,7 @@ public class FileClonerLogger
             {
                 try
                 {
-                    File.AppendAllText(LogFile, logToBeWritten + "\n");
+                    File.AppendAllText(_logFile, logToBeWritten + "\n");
                 }
                 catch (Exception ex)
                 {
@@ -98,7 +112,7 @@ public class FileClonerLogger
                 }
             }
         }
-        Trace.WriteLine(logToBeWritten);
+        Trace.WriteLine(logToBeWritten + "\n");
     }
 
 }
