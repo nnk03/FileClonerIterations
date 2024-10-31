@@ -18,22 +18,11 @@ public class FileSender : FileClonerHeaders, INotificationHandler
     private const string CurrentModule = "FileSender";
     private CommunicatorServer _fileServer;
 
-    private const string SenderConfigFilePathKey = "filePath";
-    private const string SenderConfigSavePathKey = "savePath";
-    private const string SenderConfigTimeStampKey = "timeStamp";
-
-    // should we use serializer??
-    private Serializer _serializer = new Serializer();
-
     private string _myServerAddress;
 
     // get clientIdToSocket Dictionary
-    public FileSender()
+    public FileSender() : base(CurrentModule)
     {
-        _syncLock = new();
-        _clientDictionary = new();
-        _clientIdToSocket = new();
-        _logger = new(CurrentModule);
 
         // create a file server in each device to serve the files
         _fileServer = new CommunicatorServer();
@@ -41,7 +30,7 @@ public class FileSender : FileClonerHeaders, INotificationHandler
         _myServerAddress = _myServerAddress.Replace(':', '_');
 
         // subscribe to messages with module name as "FileSender"
-        _fileServer.Subscribe("FileSender", this, false);
+        _fileServer.Subscribe(CurrentModule, this, false);
 
         // gets the reference of the map
         _clientIdToSocket = _fileServer.GetClientList();
@@ -57,44 +46,12 @@ public class FileSender : FileClonerHeaders, INotificationHandler
 
         if (header == FileRequestHeader)
         {
-
             string serializedRequest = serializedDataList[MessageIndex];
-            List<string> fileRequests = _serializer.Deserialize<List<string>>(serializedRequest);
-            // fileRequests contains the file requests
-            // example ['A.txt', 'B.txt']
+            Thread ackFileRequestThread = new(() => {
+                ResponseToFileRequest(serializedRequest, clientId);
+            });
+            ackFileRequestThread.Start();
 
-            var fileDataList = new List<Dictionary<string, object>>();
-
-            // Now check if the requested files exist and send ACK using thread ??
-            // but now we need to send the response to that specific client which gave us
-            // the broadcast message
-
-            // response would be a list which contains serialized json
-            // json 
-            foreach (string file in fileRequests)
-            {
-                // Check if the file exists
-                if (File.Exists(file))
-                {
-                    // Get the last write time of the file
-                    DateTime lastWriteTime = File.GetLastWriteTime(file);
-
-                    // Add file data to the list
-                    fileDataList.Add(new Dictionary<string, object>
-                    {
-                        { SenderConfigFilePathKey, file },
-                        { SenderConfigTimeStampKey, lastWriteTime }
-                    });
-                }
-            }
-            string jsonResponse = JsonSerializer.Serialize(fileDataList);
-            //string jsonResponse = JsonSerializer.Serialize(
-            //    fileDataList, new JsonSerializerOptions { WriteIndented = true }
-            //);
-
-            _fileServer.Send(
-                GetMessage(AckFileRequestHeader, jsonResponse),
-                CurrentModule, clientId);
         }
         else if (header == CloneFilesHeader)
         {
@@ -139,6 +96,46 @@ public class FileSender : FileClonerHeaders, INotificationHandler
             Console.WriteLine($"Error sending file: {ex.Message}");
         }
 
+    }
+
+    private void ResponseToFileRequest(string serializedRequest, string clientId)
+    {
+        List<string> fileRequests = _serializer.Deserialize<List<string>>(serializedRequest);
+        // fileRequests contains the file requests
+        // example ['A.txt', 'B.txt']
+
+        var fileDataList = new List<Dictionary<string, object>>();
+
+        // Now check if the requested files exist and send ACK using thread ??
+        // but now we need to send the response to that specific client which gave us
+        // the broadcast message
+
+        // response would be a list which contains serialized json
+        // json 
+        foreach (string file in fileRequests)
+        {
+            // Check if the file exists
+            if (File.Exists(file))
+            {
+                // Get the last write time of the file
+                DateTime lastWriteTime = File.GetLastWriteTime(file);
+
+                // Add file data to the list
+                fileDataList.Add(new Dictionary<string, object>
+                {
+                    { SenderConfigFilePathKey, file },
+                    { SenderConfigTimeStampKey, lastWriteTime }
+                });
+            }
+        }
+        string jsonResponse = JsonSerializer.Serialize(fileDataList);
+        //string jsonResponse = JsonSerializer.Serialize(
+        //    fileDataList, new JsonSerializerOptions { WriteIndented = true }
+        //);
+
+        _fileServer.Send(
+            GetMessage(AckFileRequestHeader, jsonResponse),
+            CurrentModule, clientId);
     }
 
     /// <summary>
