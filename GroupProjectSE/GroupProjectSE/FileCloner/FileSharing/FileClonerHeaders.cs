@@ -21,6 +21,17 @@ public class FileClonerHeaders
     // protected const int FileServerPort = (int)SenderReceiverConstants.FileReceiverPortNumber;
     protected Dictionary<string, TcpClient> _clientIdToSocket;
 
+    protected string _configDirectory =
+        Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "GroupProjectSE", "FileCloner", "FileClonerConfig"
+        );
+    protected string _userConfigDirectory =
+        Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "GroupProjectSE", "FileCloner", "FileClonerUserConfig"
+        );
+
     protected const string FileRequestHeader = "<FILE_REQUESTS>";
     protected const string AckFileRequestHeader = "<ACK_FILE_REQUESTS>";
     protected const string CloneFilesHeader = "<CLONE_FILES>";
@@ -51,6 +62,31 @@ public class FileClonerHeaders
         _clientDictionary = new();
         _clientIdToSocket = new();
         _serializer = new();
+
+        try
+        {
+            if (!Directory.Exists(_configDirectory))
+            {
+                Directory.CreateDirectory(_configDirectory);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Log(ex.Message);
+        }
+
+        try
+        {
+            if (!Directory.Exists(_userConfigDirectory))
+            {
+                Directory.CreateDirectory(_userConfigDirectory);
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.Log(ex.Message);
+        }
+
     }
 
     /// <summary>

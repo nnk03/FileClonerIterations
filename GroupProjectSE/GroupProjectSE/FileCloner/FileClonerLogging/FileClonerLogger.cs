@@ -15,7 +15,11 @@ public class FileClonerLogger
 {
     private string _moduleName;
     private object _syncLock;
-    private string _logDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "GroupProjectSE", "FileClonerLogs");
+    private string _logDirectory =
+        Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "GroupProjectSE", "FileCloner", "FileClonerLogs"
+        );
     private string _logFile = ".\\FileClonerTrace.log";
     private bool _writeToFile;
 

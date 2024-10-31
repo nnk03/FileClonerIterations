@@ -12,5 +12,11 @@ namespace UnitTests
             FileClonerLogger logger = new("UnitTests", true);
             logger.Log("HELLO WORLD");
         }
+
+        [TestMethod]
+        public void FileClonerConfigFileCreation()
+        {
+            FileCloner fileCloner = new();
+        }
     }
 }

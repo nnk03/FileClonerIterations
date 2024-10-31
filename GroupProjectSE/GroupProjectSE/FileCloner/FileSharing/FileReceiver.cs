@@ -32,9 +32,10 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
     private CommunicatorServer _fileReceiverServer;
 
     // these fields are only necessary for Receiver
-    private const string ReceiverConfigFilePath = ".\\requestConfig.json";
-    private const string ResponseOfRequestConfigFilePath = ".\\responseOfRequestConfig.json";
-    private const string RequestToSendFilePath = ".\\requestToSend.json";
+    private string _receiverConfigFilePath = ".\\requestConfig.json";
+    private string _responseOfRequestConfigFilePath = ".\\responseOfRequestConfig.json";
+    private string _requestToSendFilePath = ".\\requestToSend.json";
+    private string _diffFilePath = ".\\diffFile.json";
 
     private List<string> _requestFilesPathList;
 
@@ -43,6 +44,22 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
         _fileWriteLock = new();
         _requestFilesPathList = new();
         _syncLockForSavingResponse = new();
+
+        if (Directory.Exists(_configDirectory))
+        {
+            _receiverConfigFilePath = $"{_configDirectory}\\requestConfig.json";
+            _responseOfRequestConfigFilePath = $"{_configDirectory}\\responseOfRequestConfig.json";
+            _requestToSendFilePath = $"{_configDirectory}\\requestToSend.json";
+        }
+
+        if (Directory.Exists(_userConfigDirectory))
+        {
+            _diffFilePath = $"{_userConfigDirectory}\\diffFile.json";
+        }
+        CreateAndCloseFile(_receiverConfigFilePath);
+        CreateAndCloseFile(_responseOfRequestConfigFilePath);
+        CreateAndCloseFile(_requestToSendFilePath);
+        CreateAndCloseFile(_diffFilePath);
 
         // for each file to be received from a particular device D
         // creates a new FileReceiver which handles the receiving and saving of the particular file
@@ -55,11 +72,6 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
         // Subscribe for messages with module name as "FileReceiver"
         // _fileReceiver.Subscribe(CurrentModuleName, this, false);
         _fileReceiverServer.Subscribe(CurrentModuleName, this, false);
-
-        CreateAndCloseFile(ReceiverConfigFilePath);
-        //CreateAndCloseFile(ResponseOfRequestConfigFilePath);
-        //CreateAndCloseFile(RequestToSendFilePath);
-
 
         // when starting, read the config file
         SaveFileRequests();
@@ -95,9 +107,9 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
         // take the requestToSend.json which contains the information
         // about which file to ask from which server
 
-        if (!CreateAndCloseFile(RequestToSendFilePath))
+        if (!CreateAndCloseFile(_requestToSendFilePath))
         {
-            _logger.Log($"Not able to find {RequestToSendFilePath}");
+            _logger.Log($"Not able to find {_requestToSendFilePath}");
             return;
         }
 
@@ -106,7 +118,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
         // "filePath" : <filePath>
         // "fromWhichServer" : <address>
 
-        string jsonContent = File.ReadAllText(RequestToSendFilePath);
+        string jsonContent = File.ReadAllText(_requestToSendFilePath);
         using JsonDocument doc = JsonDocument.Parse(jsonContent);
         foreach (JsonElement element in doc.RootElement.EnumerateArray())
         {
@@ -263,7 +275,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
         _requestFilesPathList = new();
         try
         {
-            string jsonContent = File.ReadAllText(ReceiverConfigFilePath);
+            string jsonContent = File.ReadAllText(_receiverConfigFilePath);
             using JsonDocument doc = JsonDocument.Parse(jsonContent);
 
             foreach (JsonElement element in doc.RootElement.EnumerateArray())
@@ -279,7 +291,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
         {
             _logger.Log(ex.Message);
             // create and close the file
-            CreateAndCloseFile(ReceiverConfigFilePath);
+            CreateAndCloseFile(_receiverConfigFilePath);
         }
         catch (Exception ex)
         {
