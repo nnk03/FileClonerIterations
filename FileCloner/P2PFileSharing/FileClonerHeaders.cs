@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using Networking.Serialization;
 
 namespace SoftwareEngineeringGroupProject.FileCloner.P2PFileSharing;
 public class FileClonerHeaders
@@ -24,8 +25,15 @@ public class FileClonerHeaders
     protected const string CloneFilesHeader = "<CLONE_FILES>";
     protected const string AckCloneFilesHeader = "<ACK_CLONE_FILES>";
 
-    //protected const string GetAllIPPortHeader = "<GET_ALL_IP_PORT>";
-    //protected const string AckGetAllIPPortHeader = "<ACK_GET_ALL_IP_PORT>";
+    // the file to be cloned is saved in this field of the JSON object in the config.json
+    protected const string ReceiverConfigFilePathKey = "filePath";
+    protected const string ReceiverConfigSavePathKey = "savePath";
+    protected const string ReceiverConfigTimeStampKey = "timeStamp";
+    protected const string ReceiverConfigFromWhichServerKey = "fromWhichServer";
+
+    protected const string SenderConfigFilePathKey = "filePath";
+    protected const string SenderConfigSavePathKey = "savePath";
+    protected const string SenderConfigTimeStampKey = "timeStamp";
 
     protected const int PacketSize = 4096;
 
@@ -33,6 +41,16 @@ public class FileClonerHeaders
     protected const int AddressIndex = 1;
     protected const int MessageIndex = 2;
     protected const int MessageSplitLength = 3;
+
+    protected Serializer _serializer;
+    public FileClonerHeaders(string moduleName)
+    {
+        _syncLock = new();
+        _logger = new(moduleName);
+        _clientDictionary = new();
+        _clientIdToSocket = new();
+        _serializer = new();
+    }
 
     /// <summary>
     /// Helper function to return the address in concatenated form

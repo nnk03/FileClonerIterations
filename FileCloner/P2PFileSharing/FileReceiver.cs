@@ -21,35 +21,27 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
     private const string CurrentModuleName = "FileReceiver";
 
     // this lock is necessary when writing to files
-    private object _fileWriteLock = new();
+    private object _fileWriteLock;
+
+    private string _myServerAddress;
 
     // private CommunicatorClient _fileReceiver;
     // CommunicatorServer is much more useful than Communicator Client??
     // for broadcasting messages
     private CommunicatorServer _fileReceiverServer;
-    private string _myServerAddress;
-    private Serializer _serializer = new Serializer();
-    private Dictionary<string, TcpClient> _receiverToSenderMap = new();
-    private List<string> _fileServerAddresses = new();
 
+    // these fields are only necessary for Receiver
     private const string ReceiverConfigFilePath = ".\\requestConfig.json";
     private const string ResponseOfRequestConfigFilePath = ".\\responseOfRequestConfig.json";
     private const string RequestToSendFilePath = ".\\requestToSend.json";
     private object _syncLockForSavingResponse = new();
 
-    private List<string> _requestFilesPath = new();
+    private List<string> _requestFilesPathList;
 
-    // the file to be cloned is saved in this field of the JSON object in the config.json
-    private const string ReceiverConfigFilePathKey = "filePath";
-    private const string ReceiverConfigSavePathKey = "savePath";
-    private const string ReceiverConfigTimeStampKey = "timeStamp";
-    private const string ReceiverConfigFromWhichServerKey = "fromWhichServer";
-    public FileReceiver()
+    public FileReceiver() : base(CurrentModuleName)
     {
-        _syncLock = new();
-        _clientDictionary = new();
-        _clientIdToSocket = new();
-        _logger = new(CurrentModuleName);
+        _fileWriteLock = new();
+        _requestFilesPathList = new();
 
         // for each file to be received from a particular device D
         // creates a new FileReceiver which handles the receiving and saving of the particular file
@@ -63,12 +55,9 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
         // _fileReceiver.Subscribe(CurrentModuleName, this, false);
         _fileReceiverServer.Subscribe(CurrentModuleName, this, false);
 
-        // no need of broadcast the message of getting all IP
-        //_fileReceiverServer.Send(
-        //    GetMessage(GetAllIPPortHeader, ""),
-        //    CurrentModuleName, null);
-
         CreateAndCloseFile(ReceiverConfigFilePath);
+        //CreateAndCloseFile(ResponseOfRequestConfigFilePath);
+        //CreateAndCloseFile(RequestToSendFilePath);
 
 
         // when starting, read the config file
@@ -83,11 +72,21 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
     {
         SaveFileRequests();
         // broadcast the request to all file servers
-        string sendFileRequests = _serializer.Serialize(_requestFilesPath);
+        string sendFileRequests = _serializer.Serialize(_requestFilesPathList);
         // client can't really send broadcast, hence using the server
         _fileReceiverServer.Send(
             GetMessage(FileRequestHeader, sendFileRequests),
             CurrentModuleName, null);
+    }
+
+    /// <summary>
+    /// After getting responses from the server about the filePath and the timeStamp,
+    /// we need to decide which file to be cloned from which server based on the timestamp
+    /// </summary>
+    public void GenerateDiff()
+    {
+        // Evans' code should be called from here, as a thread or something
+        throw new NotImplementedException();
     }
 
     public void RequestToCloneFiles()
@@ -235,7 +234,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
         // check the FILE_REQUEST.json file which contains list of files to be cloned
         // every item in the list is a JSON object with keys being fileName and values being filePath
 
-        _requestFilesPath = new();
+        _requestFilesPathList = new();
         try
         {
             string jsonContent = File.ReadAllText(ReceiverConfigFilePath);
@@ -246,7 +245,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
                 string? filePath = element.GetProperty(ReceiverConfigFilePathKey).GetString();
                 if (filePath != null)
                 {
-                    _requestFilesPath.Add(filePath);
+                    _requestFilesPathList.Add(filePath);
                 }
             }
         }

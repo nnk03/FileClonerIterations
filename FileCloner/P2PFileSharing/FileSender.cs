@@ -18,22 +18,11 @@ public class FileSender : FileClonerHeaders, INotificationHandler
     private const string CurrentModule = "FileSender";
     private CommunicatorServer _fileServer;
 
-    private const string SenderConfigFilePathKey = "filePath";
-    private const string SenderConfigSavePathKey = "savePath";
-    private const string SenderConfigTimeStampKey = "timeStamp";
-
-    // should we use serializer??
-    private Serializer _serializer = new Serializer();
-
     private string _myServerAddress;
 
     // get clientIdToSocket Dictionary
-    public FileSender()
+    public FileSender() : base(CurrentModule)
     {
-        _syncLock = new();
-        _clientDictionary = new();
-        _clientIdToSocket = new();
-        _logger = new(CurrentModule);
 
         // create a file server in each device to serve the files
         _fileServer = new CommunicatorServer();
@@ -41,7 +30,7 @@ public class FileSender : FileClonerHeaders, INotificationHandler
         _myServerAddress = _myServerAddress.Replace(':', '_');
 
         // subscribe to messages with module name as "FileSender"
-        _fileServer.Subscribe("FileSender", this, false);
+        _fileServer.Subscribe(CurrentModule, this, false);
 
         // gets the reference of the map
         _clientIdToSocket = _fileServer.GetClientList();
