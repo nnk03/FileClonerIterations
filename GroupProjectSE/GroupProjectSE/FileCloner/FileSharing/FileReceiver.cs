@@ -194,7 +194,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
     /// <param name="fromWhichServer"></param>
     private void SaveResponse(string data, string fromWhichServer)
     {
-        string saveFileName = $"{fromWhichServer}.json";
+        string saveFileName = $"{_configDirectory}\\{fromWhichServer}.json";
 
         if (!_syncLockForSavingResponse.ContainsKey(saveFileName))
         {
