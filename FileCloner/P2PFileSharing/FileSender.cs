@@ -57,44 +57,12 @@ public class FileSender : FileClonerHeaders, INotificationHandler
 
         if (header == FileRequestHeader)
         {
-
             string serializedRequest = serializedDataList[MessageIndex];
-            List<string> fileRequests = _serializer.Deserialize<List<string>>(serializedRequest);
-            // fileRequests contains the file requests
-            // example ['A.txt', 'B.txt']
+            Thread ackFileRequestThread = new(() => {
+                ResponseToFileRequest(serializedRequest, clientId);
+            });
+            ackFileRequestThread.Start();
 
-            var fileDataList = new List<Dictionary<string, object>>();
-
-            // Now check if the requested files exist and send ACK using thread ??
-            // but now we need to send the response to that specific client which gave us
-            // the broadcast message
-
-            // response would be a list which contains serialized json
-            // json 
-            foreach (string file in fileRequests)
-            {
-                // Check if the file exists
-                if (File.Exists(file))
-                {
-                    // Get the last write time of the file
-                    DateTime lastWriteTime = File.GetLastWriteTime(file);
-
-                    // Add file data to the list
-                    fileDataList.Add(new Dictionary<string, object>
-                    {
-                        { SenderConfigFilePathKey, file },
-                        { SenderConfigTimeStampKey, lastWriteTime }
-                    });
-                }
-            }
-            string jsonResponse = JsonSerializer.Serialize(fileDataList);
-            //string jsonResponse = JsonSerializer.Serialize(
-            //    fileDataList, new JsonSerializerOptions { WriteIndented = true }
-            //);
-
-            _fileServer.Send(
-                GetMessage(AckFileRequestHeader, jsonResponse),
-                CurrentModule, clientId);
         }
         else if (header == CloneFilesHeader)
         {
@@ -139,6 +107,46 @@ public class FileSender : FileClonerHeaders, INotificationHandler
             Console.WriteLine($"Error sending file: {ex.Message}");
         }
 
+    }
+
+    private void ResponseToFileRequest(string serializedRequest, string clientId)
+    {
+        List<string> fileRequests = _serializer.Deserialize<List<string>>(serializedRequest);
+        // fileRequests contains the file requests
+        // example ['A.txt', 'B.txt']
+
+        var fileDataList = new List<Dictionary<string, object>>();
+
+        // Now check if the requested files exist and send ACK using thread ??
+        // but now we need to send the response to that specific client which gave us
+        // the broadcast message
+
+        // response would be a list which contains serialized json
+        // json 
+        foreach (string file in fileRequests)
+        {
+            // Check if the file exists
+            if (File.Exists(file))
+            {
+                // Get the last write time of the file
+                DateTime lastWriteTime = File.GetLastWriteTime(file);
+
+                // Add file data to the list
+                fileDataList.Add(new Dictionary<string, object>
+                {
+                    { SenderConfigFilePathKey, file },
+                    { SenderConfigTimeStampKey, lastWriteTime }
+                });
+            }
+        }
+        string jsonResponse = JsonSerializer.Serialize(fileDataList);
+        //string jsonResponse = JsonSerializer.Serialize(
+        //    fileDataList, new JsonSerializerOptions { WriteIndented = true }
+        //);
+
+        _fileServer.Send(
+            GetMessage(AckFileRequestHeader, jsonResponse),
+            CurrentModule, clientId);
     }
 
     /// <summary>

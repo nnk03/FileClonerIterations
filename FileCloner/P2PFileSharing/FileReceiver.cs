@@ -27,6 +27,7 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
     private Dictionary<string, TcpClient> _clientDictionary = new();
     private Dictionary<string, TcpClient> _clientIdToSocket;
     private object _syncLock = new();
+    private object _fileWriteLock = new();
 
     // private CommunicatorClient _fileReceiver;
     // CommunicatorServer is much more useful than Communicator Client??
@@ -39,6 +40,7 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
 
     private const string ReceiverConfigFilePath = ".\\requestConfig.json";
     private const string ResponseOfRequestConfigFilePath = ".\\responseOfRequestConfig.json";
+    private const string RequestToSendFilePath = ".\\requestToSend.json";
     private object _syncLockForSavingResponse = new();
 
     private List<string> _requestFilesPath = new();
@@ -47,6 +49,7 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
     private const string ReceiverConfigFilePathKey = "filePath";
     private const string ReceiverConfigSavePathKey = "savePath";
     private const string ReceiverConfigTimeStampKey = "timeStamp";
+    private const string ReceiverConfigFromWhichServerKey = "fromWhichServer";
     public FileReceiver()
     {
         _syncLock = new();
@@ -80,6 +83,58 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
     }
 
     /// <summary>
+    /// gets the list of files to be cloned and broadcasts the request to all file servers
+    /// </summary>
+    public void RequestFiles()
+    {
+        SaveFileRequests();
+        // broadcast the request to all file servers
+        string sendFileRequests = _serializer.Serialize(_requestFilesPath);
+        // client can't really send broadcast, hence using the server
+        _fileReceiverServer.Send(
+            GetMessage(FileRequestHeader, sendFileRequests),
+            CurrentModuleName, null);
+    }
+
+    public void RequestToCloneFiles()
+    {
+        // take the requestToSend.json which contains the information
+        // about which file to ask from which server
+
+        if (!CreateAndCloseFile(RequestToSendFilePath))
+        {
+            _logger.Log($"Not able to find {RequestToSendFilePath}"));
+            return;
+        }
+
+        // the file contains the key list of json objects
+        // each object is of the form
+        // "filePath" : <filePath>
+        // "fromWhichServer" : <address>
+
+        string jsonContent = File.ReadAllText(RequestToSendFilePath);
+        using JsonDocument doc = JsonDocument.Parse(jsonContent);
+        foreach (JsonElement element in doc.RootElement.EnumerateArray())
+        {
+            string? filePath = element.GetProperty(ReceiverConfigFilePathKey).GetString();
+            string? fromWhichServer = element.GetProperty(ReceiverConfigFromWhichServerKey).GetString();
+
+            if (filePath == null || fromWhichServer == null)
+            {
+                continue;
+            }
+
+            // send the request to clone this file
+            _fileReceiverServer.Send(
+                GetMessage(CloneFilesHeader, filePath),
+                CurrentModuleName, GetClientId(fromWhichServer)
+                );
+        }
+
+
+    }
+
+    /// <summary>
     /// Mentions what to do when data is received
     /// </summary>
     /// <param name="serializedData"></param>
@@ -102,26 +157,58 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
         }
         else if (serializedData.StartsWith(AckCloneFilesHeader))
         {
-            // format is AckCloneFilesHeader:filePath:count:chunk
+            // format is Address:AckCloneFilesHeader:filePath:count:chunk
+            Thread receiveFilesThroughNetwork = new Thread(() => {
+                // put the corresponding save file path over here
+                ReceiveFileOverNetwork(serializedDataList[MessageIndex]);
+            });
+            receiveFilesThroughNetwork.Start();
         }
 
     }
 
-
-
-    /// <summary>
-    /// gets the list of files to be cloned and broadcasts the request to all file servers
-    /// </summary>
-    public void RequestFiles()
+    private void ReceiveFileOverNetwork(string data)
     {
-        SaveFileRequests();
-        // broadcast the request to all file servers
-        string sendFileRequests = _serializer.Serialize(_requestFilesPath);
-        // client can't really send broadcast, hence using the server
-        _fileReceiverServer.Send(
-            GetMessage(FileRequestHeader, sendFileRequests),
-            CurrentModuleName, null);
+        try
+        {
+            // format of data here is filePath:count:chunk
+            string[] dataList = data.Split(':', 3);
+            string filePath = dataList[0];
+            int count = int.Parse(dataList[1]);
+            string chunk = dataList[2];
+
+            if (count == 0)
+            {
+                if (!CreateAndCloseFile(filePath))
+                {
+                    _logger.Log($"Could not create {filePath}");
+                    return;
+                }
+                lock (_fileWriteLock)
+                {
+                    //false means that it will overwrite onto the file
+                    using StreamWriter writer = new StreamWriter(filePath, false);
+                    writer.Write(chunk);
+                }
+            }
+            else
+            {
+                lock (_fileWriteLock)
+                {
+                    // true implies that it will get appended
+                    using StreamWriter writer = new StreamWriter(filePath, true);
+                    writer.Write(chunk);
+                }
+
+            }
+            _logger.Log($"Chunk number {count} written succesfully onto the file.");
+        }
+        catch (Exception e)
+        {
+            _logger.Log(e.Message);
+        }
     }
+
 
     /// <summary>
     /// Saves the response from the file Server `fromWhichServer` and saves it
@@ -150,55 +237,6 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
     //    // get the file from the fileServer and save it in savePath
     //}
 
-    /// <summary>
-    /// Helper function to create and close the file
-    /// taking care of error handling
-    /// creates a new file only if the given file path does not exist
-    /// </summary>
-    /// <param name="filePath"></param>
-    /// <returns>
-    /// a boolean indicating if Creation of file was successful
-    /// </returns>
-    private bool CreateAndCloseFile(string filePath)
-    {
-        // returns if success or failure
-        try
-        {
-            if (!File.Exists(filePath))
-            {
-                File.Create(filePath).Close();
-            }
-            return true;
-        }
-        catch (Exception ex)
-        {
-            Trace.Write(ex);
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// extracts ip address and port from the socket
-    /// </summary>
-    /// <param name="socket"></param>
-    /// <returns>
-    /// a string in the format IPAddress_Port
-    /// </returns>
-    private string GetMyAddress(TcpClient socket)
-    {
-        IPEndPoint? remoteEndPoint = (IPEndPoint?)socket.Client.RemoteEndPoint;
-        if (remoteEndPoint == null)
-        {
-            return "";
-        }
-        string ipAddress = remoteEndPoint.Address.ToString();
-        string port = remoteEndPoint.Port.ToString();
-        // using underscores since apparently fileNames cannot have :
-        string address = GetConcatenatedAddress(ipAddress, port);
-        return address;
-
-    }
 
     /// <summary>
     ///  reads the config file which contains the list of files to be cloned and 
@@ -246,6 +284,56 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
     private string GetMessage(string header, string message)
     {
         return GetMessage(_myServerAddress, header, message);
+    }
+
+    /// <summary>
+    /// extracts ip address and port from the socket
+    /// </summary>
+    /// <param name="socket"></param>
+    /// <returns>
+    /// a string in the format IPAddress_Port
+    /// </returns>
+    private string GetMyAddress(TcpClient socket)
+    {
+        IPEndPoint? remoteEndPoint = (IPEndPoint?)socket.Client.RemoteEndPoint;
+        if (remoteEndPoint == null)
+        {
+            return "";
+        }
+        string ipAddress = remoteEndPoint.Address.ToString();
+        string port = remoteEndPoint.Port.ToString();
+        // using underscores since apparently fileNames cannot have :
+        string address = GetConcatenatedAddress(ipAddress, port);
+        return address;
+
+    }
+
+    /// <summary>
+    /// Helper function to create and close the file
+    /// taking care of error handling
+    /// creates a new file only if the given file path does not exist
+    /// </summary>
+    /// <param name="filePath"></param>
+    /// <returns>
+    /// a boolean indicating if Creation of file was successful
+    /// </returns>
+    private bool CreateAndCloseFile(string filePath)
+    {
+        // returns if success or failure
+        try
+        {
+            if (!File.Exists(filePath))
+            {
+                File.Create(filePath).Close();
+            }
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Trace.Write(ex);
+        }
+
+        return false;
     }
 
 }
