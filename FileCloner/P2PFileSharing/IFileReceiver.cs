@@ -9,10 +9,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SoftwareEngineeringGroupProject.FileCloner.P2PFileSharing;
-public enum SenderReceiverConstants
+public interface IFileReceiver
 {
-    FileServerPortNumber = 8888,
-    FileReceiverPortNumber = 9999,
-    PacketSize = 4096
+    /// <summary>
+    /// This function is to be called when user wants to request for the files
+    /// </summary>
+    public void RequestFiles();
+
+    /// <summary>
+    /// This function is to be called after generating the diff, that is
+    /// once we know which file to be asked from which server
+    /// </summary>
+    public void RequestToCloneFiles();
 
 }

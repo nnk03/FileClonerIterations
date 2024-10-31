@@ -16,17 +16,11 @@ using Networking.Communication;
 using Networking.Serialization;
 
 namespace SoftwareEngineeringGroupProject.FileCloner.P2PFileSharing;
-public class FileReceiver : FileClonerHeaders, INotificationHandler
+public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandler
 {
-    // this must establish a connection with every file server
-    // get serverAddress i.e IP : Port of all file Servers
-    // save it somewhere
-    // and then request through each socket about the availability of files
     private const string CurrentModuleName = "FileReceiver";
-    private Logger.Logger _logger = new(CurrentModuleName);
-    private Dictionary<string, TcpClient> _clientDictionary = new();
-    private Dictionary<string, TcpClient> _clientIdToSocket;
-    private object _syncLock = new();
+
+    // this lock is necessary when writing to files
     private object _fileWriteLock = new();
 
     // private CommunicatorClient _fileReceiver;
@@ -103,7 +97,7 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
 
         if (!CreateAndCloseFile(RequestToSendFilePath))
         {
-            _logger.Log($"Not able to find {RequestToSendFilePath}"));
+            _logger.Log($"Not able to find {RequestToSendFilePath}");
             return;
         }
 
@@ -167,6 +161,29 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
 
     }
 
+    /// <summary>
+    /// Saves the response from the file Server `fromWhichServer` and saves it
+    /// in the file "fromWhichServer".json
+    /// the server will be returning a json file, containing the available files and its
+    /// timestamp
+    /// </summary>
+    /// <param name="data"></param>
+    /// <param name="fromWhichServer"></param>
+    private void SaveResponse(string data, string fromWhichServer)
+    {
+        string saveFileName = $"{fromWhichServer}.json";
+        if (!CreateAndCloseFile(saveFileName))
+        {
+            _logger.Log($"Not able to create file {saveFileName}");
+            return;
+        }
+        // data is serialized json
+        // saving it in the fileName saveFileName
+
+        File.WriteAllText(saveFileName, data);
+    }
+
+
     private void ReceiveFileOverNetwork(string data)
     {
         try
@@ -208,35 +225,6 @@ public class FileReceiver : FileClonerHeaders, INotificationHandler
             _logger.Log(e.Message);
         }
     }
-
-
-    /// <summary>
-    /// Saves the response from the file Server `fromWhichServer` and saves it
-    /// in the file "fromWhichServer".json
-    /// the server will be returning a json file, containing the available files and its
-    /// timestamp
-    /// </summary>
-    /// <param name="data"></param>
-    /// <param name="fromWhichServer"></param>
-    private void SaveResponse(string data, string fromWhichServer)
-    {
-        string saveFileName = $"{fromWhichServer}.json";
-        if (!CreateAndCloseFile(saveFileName))
-        {
-            _logger.Log($"Not able to create file {saveFileName}");
-            return;
-        }
-        // data is serialized json
-        // saving it in the fileName saveFileName
-
-        File.WriteAllText(saveFileName, data);
-    }
-
-    //public void CloneFile(string filePath, string savePath, string fileServerIP, string fileServerPort)
-    //{
-    //    // get the file from the fileServer and save it in savePath
-    //}
-
 
     /// <summary>
     ///  reads the config file which contains the list of files to be cloned and 
