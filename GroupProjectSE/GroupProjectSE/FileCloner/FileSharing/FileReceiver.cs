@@ -278,7 +278,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
         }
         catch (Exception e)
         {
-            _logger.Log(e.Message);
+            _logger.Log(e.Message, isErrorMessage: true);
         }
     }
 
@@ -310,13 +310,13 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
         }
         catch (FileNotFoundException ex)
         {
-            _logger.Log(ex.Message);
+            _logger.Log(ex.Message, isErrorMessage: true);
             // create and close the file
             CreateAndCloseFile(_receiverConfigFilePath);
         }
         catch (Exception ex)
         {
-            _logger.Log(ex.Message);
+            _logger.Log(ex.Message, isErrorMessage: true);
         }
     }
 
@@ -378,6 +378,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
         }
         catch (Exception ex)
         {
+            _logger.Log(ex.Message, isErrorMessage: true);
             Trace.Write(ex);
         }
 

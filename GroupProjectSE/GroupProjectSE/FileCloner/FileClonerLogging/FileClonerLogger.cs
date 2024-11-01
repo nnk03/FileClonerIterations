@@ -95,10 +95,15 @@ public class FileClonerLogger
     public void Log(string message,
                     [CallerMemberName] string memberName = "",
                     [CallerFilePath] string filePath = "",
-                    [CallerLineNumber] int lineNumber = 0)
+                    [CallerLineNumber] int lineNumber = 0,
+                    bool isErrorMessage = false)
     {
         // string logToBeWritten = $"{_moduleName}:{filePath}->{memberName}->{lineNumber} :: {message}";
         string logToBeWritten = $"{Path.GetFileName(filePath)}->{memberName}->{lineNumber} :: {message}";
+        if (isErrorMessage)
+        {
+            logToBeWritten = $"ERROR : {logToBeWritten}";
+        }
         Write(logToBeWritten);
     }
 

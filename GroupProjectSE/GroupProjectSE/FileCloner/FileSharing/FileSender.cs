@@ -111,7 +111,7 @@ public class FileSender : FileClonerHeaders, INotificationHandler
         catch (Exception ex)
         {
             // Handle exceptions (file not found, network issues, etc.
-            _logger.Log($"Error sending file: {ex.Message}");
+            _logger.Log($"Error sending file: {ex.Message}", isErrorMessage: true);
         }
 
     }
