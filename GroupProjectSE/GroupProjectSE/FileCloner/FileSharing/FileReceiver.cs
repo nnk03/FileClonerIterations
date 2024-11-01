@@ -41,9 +41,18 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
 
     public FileReceiver() : base(CurrentModuleName)
     {
+        _logger.Log("FileReceiver Constructing");
         _fileWriteLock = new();
         _requestFilesPathList = new();
         _syncLockForSavingResponse = new();
+
+        // for each file to be received from a particular device D
+        // creates a new FileReceiver which handles the receiving and saving of the particular file
+        // _fileReceiver = new CommunicatorClient();
+        _fileReceiverServer = new CommunicatorServer();
+        _myServerAddress = _fileReceiverServer.Start();
+        _myServerAddress = _myServerAddress.Replace(':', '_');
+        _logger.Log($"My address is {_myServerAddress}");
 
         if (Directory.Exists(_configDirectory))
         {
@@ -61,12 +70,6 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
         CreateAndCloseFile(_requestToSendFilePath);
         CreateAndCloseFile(_diffFilePath);
 
-        // for each file to be received from a particular device D
-        // creates a new FileReceiver which handles the receiving and saving of the particular file
-        // _fileReceiver = new CommunicatorClient();
-        _fileReceiverServer = new CommunicatorServer();
-        _myServerAddress = _fileReceiverServer.Start();
-        _myServerAddress = _myServerAddress.Replace(':', '_');
         _clientIdToSocket = _fileReceiverServer.GetClientList();
 
         // Subscribe for messages with module name as "FileReceiver"
@@ -83,9 +86,11 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
     /// </summary>
     public void RequestFiles()
     {
+        _logger.Log("Requesting Files");
         SaveFileRequests();
         // broadcast the request to all file servers
         string sendFileRequests = _serializer.Serialize(_requestFilesPathList);
+        _logger.Log("Serialized request : " + sendFileRequests);
         // client can't really send broadcast, hence using the server
         _fileReceiverServer.Send(
             GetMessage(FileRequestHeader, sendFileRequests),
@@ -98,6 +103,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
     /// </summary>
     public void GenerateDiff()
     {
+        _logger.Log("Generating Diff");
         // Evans' code should be called from here, as a thread or something
         throw new NotImplementedException();
     }
@@ -106,6 +112,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
     {
         // take the requestToSend.json which contains the information
         // about which file to ask from which server
+        _logger.Log("Requesting to Clone Files");
 
         if (!CreateAndCloseFile(_requestToSendFilePath))
         {
@@ -124,6 +131,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
         {
             string? filePath = element.GetProperty(ReceiverConfigFilePathKey).GetString();
             string? fromWhichServer = element.GetProperty(ReceiverConfigFromWhichServerKey).GetString();
+            _logger.Log($"Requesting to clone {filePath} from the server {fromWhichServer}");
 
             if (filePath == null || fromWhichServer == null)
             {
@@ -154,6 +162,9 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
 
         if (serializedData.StartsWith(AckFileRequestHeader))
         {
+            _logger.Log(
+                $"Received {AckFileRequestHeader} from server {sendToAddress}, clientId is {clientId}"
+            );
             string serializedJsonData = serializedDataList[MessageIndex];
 
             Thread saveResponseThread = new Thread(() => {
@@ -163,6 +174,9 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
         }
         else if (serializedData.StartsWith(AckCloneFilesHeader))
         {
+            _logger.Log(
+                $"Received {AckCloneFilesHeader} from server {sendToAddress}, clientId is {clientId}"
+            );
             string data = serializedDataList[MessageIndex];
 
             // format of data here is filePath:count:chunk
@@ -173,6 +187,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
             long count = long.Parse(countByTotalNumberOfTransmissions[0]);
             long numberOfTransmissionsRequired =
                 long.Parse(countByTotalNumberOfTransmissions[1]);
+            _logger.Log($"Cloning File {filePath} : {count}/{numberOfTransmissionsRequired} ongoing");
 
             // format is Address:AckCloneFilesHeader:filePath:count:chunk
             Thread receiveFilesThroughNetwork = new Thread(() => {
@@ -195,6 +210,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
     private void SaveResponse(string data, string fromWhichServer)
     {
         string saveFileName = $"{_configDirectory}\\{fromWhichServer}.json";
+        _logger.Log($"Saving Response {data} from server {fromWhichServer} in file {saveFileName}");
 
         if (!_syncLockForSavingResponse.ContainsKey(saveFileName))
         {
@@ -212,7 +228,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
         {
             // data is serialized json
             // saving it in the fileName saveFileName
-            File.WriteAllText(saveFileName, data);
+            File.WriteAllText(saveFileName, data + '\n');
         }
     }
 
@@ -230,6 +246,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
                 long.Parse(countByTotalNumberOfTransmissions[1]);
 
             string chunk = dataList[2];
+            _logger.Log($"Writing file : {filePath} : {count}/{numberOfTransmissionsRequired} ongoing");
 
             if (count == 0)
             {
@@ -255,7 +272,9 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
                 }
 
             }
-            _logger.Log($"Chunk number {count} written succesfully onto the file.");
+            _logger.Log(
+                $"{filePath} : Chunk number {count}/{numberOfTransmissionsRequired}" +
+                "written succesfully onto the file.");
         }
         catch (Exception e)
         {
@@ -272,6 +291,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
         // check the FILE_REQUEST.json file which contains list of files to be cloned
         // every item in the list is a JSON object with keys being fileName and values being filePath
 
+        _logger.Log("Saving user requests from file");
         _requestFilesPathList = new();
         try
         {
@@ -284,6 +304,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
                 if (filePath != null)
                 {
                     _requestFilesPathList.Add(filePath);
+                    _logger.Log($"Saving user requested file : {filePath}");
                 }
             }
         }
@@ -329,6 +350,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
         string port = remoteEndPoint.Port.ToString();
         // using underscores since apparently fileNames cannot have :
         string address = GetConcatenatedAddress(ipAddress, port);
+        _logger.Log($"My Address is {address}");
         return address;
 
     }
@@ -344,6 +366,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
     /// </returns>
     private bool CreateAndCloseFile(string filePath)
     {
+        _logger.Log($"Trying to create file {filePath} if it doesn't exists");
         // returns if success or failure
         try
         {

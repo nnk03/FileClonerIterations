@@ -63,6 +63,8 @@ public class FileClonerHeaders
         _clientIdToSocket = new();
         _serializer = new();
 
+        _logger.Log("FileClonerHeaders Constructing");
+
         try
         {
             if (!Directory.Exists(_configDirectory))
@@ -191,6 +193,7 @@ public class FileClonerHeaders
     /// <param name="clientId"></param>
     public void OnClientLeft(string clientId)
     {
+        _logger.Log($"Client left, client ID is: {clientId}");
         lock (_syncLock)
         {
             if (_clientDictionary.ContainsKey(clientId))

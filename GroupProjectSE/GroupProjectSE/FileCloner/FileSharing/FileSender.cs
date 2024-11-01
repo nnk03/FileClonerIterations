@@ -22,11 +22,13 @@ public class FileSender : FileClonerHeaders, INotificationHandler
     // get clientIdToSocket Dictionary
     public FileSender() : base(CurrentModule)
     {
+        _logger.Log("FileSender Constructing");
 
         // create a file server in each device to serve the files
         _fileServer = new CommunicatorServer();
         _myServerAddress = _fileServer.Start();
         _myServerAddress = _myServerAddress.Replace(':', '_');
+        _logger.Log($"My Address is {_myServerAddress}");
 
         // subscribe to messages with module name as "FileSender"
         _fileServer.Subscribe(CurrentModule, this, false);
@@ -45,6 +47,7 @@ public class FileSender : FileClonerHeaders, INotificationHandler
 
         if (header == FileRequestHeader)
         {
+            _logger.Log($"Received File Request from {sendToAddress}, clientId is {clientId}");
             string serializedRequest = serializedDataList[MessageIndex];
             Thread ackFileRequestThread = new(() => {
                 ResponseToFileRequest(serializedRequest, clientId);
@@ -54,6 +57,7 @@ public class FileSender : FileClonerHeaders, INotificationHandler
         }
         else if (header == CloneFilesHeader)
         {
+            _logger.Log($"Received Request to Clone from {sendToAddress}, clientId is {clientId}");
             string filePath = serializedDataList[MessageIndex];
             // take the contents of the file path and send it in chunks
 
@@ -83,7 +87,8 @@ public class FileSender : FileClonerHeaders, INotificationHandler
                 (long)Math.Ceiling((double)totalFileSize / (double)buffer.Length);
 
             _logger.Log(
-                $"Number of transmissions required for file {filePath} is {numberOfTransmissionsRequired}"
+                $"From My server : {_myServerAddress} : Number of transmissions required for " +
+                "file {filePath} is {numberOfTransmissionsRequired}"
             );
 
             // Read the file in chunks
@@ -91,6 +96,10 @@ public class FileSender : FileClonerHeaders, INotificationHandler
             {
                 // Convert the characters read into a string
                 string chunk = new string(buffer, 0, charsRead);
+                _logger.Log(
+                    $"Sending file {filePath} : {count}/{numberOfTransmissionsRequired} to requester"
+                    + $" {clientId}"
+                );
 
                 // Send the chunk over the network
                 _fileServer.Send(
@@ -101,14 +110,15 @@ public class FileSender : FileClonerHeaders, INotificationHandler
         }
         catch (Exception ex)
         {
-            // Handle exceptions (file not found, network issues, etc.)
-            Console.WriteLine($"Error sending file: {ex.Message}");
+            // Handle exceptions (file not found, network issues, etc.
+            _logger.Log($"Error sending file: {ex.Message}");
         }
 
     }
 
     private void ResponseToFileRequest(string serializedRequest, string clientId)
     {
+        _logger.Log($"Responding to FilRequest from client {clientId}");
         List<string> fileRequests = _serializer.Deserialize<List<string>>(serializedRequest);
         // fileRequests contains the file requests
         // example ['A.txt', 'B.txt']
@@ -128,6 +138,13 @@ public class FileSender : FileClonerHeaders, INotificationHandler
             {
                 // Get the last write time of the file
                 DateTime lastWriteTime = File.GetLastWriteTime(file);
+                _logger.Log(
+                    $"Client {clientId} requested File {file} from my server : {_myServerAddress}"
+                );
+                _logger.Log(
+                    $"Last WriteTime of File {file} is {lastWriteTime.ToString()}" +
+                    $" my server : {_myServerAddress}"
+                );
 
                 // Add file data to the list
                 fileDataList.Add(new Dictionary<string, object>
@@ -161,6 +178,7 @@ public class FileSender : FileClonerHeaders, INotificationHandler
 
     public void StopFileSender()
     {
+        _logger.Log($"Stopping File Server {_myServerAddress}");
         _fileServer.Stop();
     }
 

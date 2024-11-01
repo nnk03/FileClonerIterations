@@ -20,7 +20,7 @@ public class FileClonerLogger
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
             "GroupProjectSE", "FileCloner", "FileClonerLogs"
         );
-    private string _logFile = ".\\FileClonerTrace.log";
+    private string _logFile;
     private bool _writeToFile;
 
     /// <summary>
@@ -33,6 +33,7 @@ public class FileClonerLogger
         _moduleName = moduleName;
         _syncLock = new();
         _writeToFile = writeToFile;
+        _logFile = $".\\FileCloner{_moduleName}.log";
 
         try
         {
@@ -40,7 +41,7 @@ public class FileClonerLogger
             {
                 Directory.CreateDirectory(_logDirectory);
             }
-            _logFile = $"{_logDirectory}\\FileClonerTrace.log";
+            _logFile = $"{_logDirectory}\\FileCloner{_moduleName}.log";
         }
         catch (Exception ex)
         {
@@ -96,7 +97,8 @@ public class FileClonerLogger
                     [CallerFilePath] string filePath = "",
                     [CallerLineNumber] int lineNumber = 0)
     {
-        string logToBeWritten = $"{_moduleName}:{filePath}->{memberName}->{lineNumber} :: {message}";
+        // string logToBeWritten = $"{_moduleName}:{filePath}->{memberName}->{lineNumber} :: {message}";
+        string logToBeWritten = $"{Path.GetFileName(filePath)}->{memberName}->{lineNumber} :: {message}";
         Write(logToBeWritten);
     }
 
