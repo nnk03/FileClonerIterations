@@ -47,14 +47,14 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
 
         if (Directory.Exists(_configDirectory))
         {
-            _receiverConfigFilePath = $"{_configDirectory}\\requestConfig.json";
             _responseOfRequestConfigFilePath = $"{_configDirectory}\\responseOfRequestConfig.json";
             _requestToSendFilePath = $"{_configDirectory}\\requestToSend.json";
+            _diffFilePath = $"{_configDirectory}\\diffFile.json";
         }
 
         if (Directory.Exists(_userConfigDirectory))
         {
-            _diffFilePath = $"{_userConfigDirectory}\\diffFile.json";
+            _receiverConfigFilePath = $"{_userConfigDirectory}\\requestConfig.json";
         }
         CreateAndCloseFile(_receiverConfigFilePath);
         CreateAndCloseFile(_responseOfRequestConfigFilePath);
