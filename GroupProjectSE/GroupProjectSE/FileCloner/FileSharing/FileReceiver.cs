@@ -13,6 +13,9 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Networking.Communication;
 using Networking;
+using GroupProjectSE.GenerateDiff;
+using System.Threading;
+
 
 namespace GroupProjectSE.FileCloning.FileSharing;
 
@@ -104,7 +107,24 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
     public void GenerateDiff()
     {
         _logger.Log("Generating Diff");
-        // Evans' code should be called from here, as a thread or something
+        string saveFileName = $"{_configDirectory}";
+
+        List<string>fileNames= new List<string>();
+
+        foreach(string filePath in Directory.GetFiles(saveFileName))
+        {
+            fileNames.Add(filePath);
+        }
+
+        Thread generateDiffThread = new Thread(() => Program.DiffGenerator(fileNames,saveFileName));
+        generateDiffThread.Start();
+
+
+        // Start the thread
+        generateDiffThread.Start();
+
+        // Main thread continues execution
+
         throw new NotImplementedException();
     }
 
