@@ -32,6 +32,8 @@ namespace UnitTests
         [TestMethod]
         public void DiffGeneratorTest()
         {
+            // create dummy files with dummy content
+            // test it using the API
             FileCloner fileCloner = new();
 
             FileReceiver fileReceiver = fileCloner._fileReceiver;
