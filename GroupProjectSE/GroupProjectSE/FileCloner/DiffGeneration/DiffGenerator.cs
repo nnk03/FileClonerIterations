@@ -79,6 +79,7 @@ public class DiffGenerator
                 {
                     _logger.Log($"File name: {item.FilePath}, Timestamp: {item.Timestamp}, IP: {ipAddress}, Port: {port}");
 
+                    DateTime localLastModified = File.Exists(item.FilePath) ? File.GetLastWriteTime(item.FilePath) : DateTime.MinValue;
                     // Check if the file already exists in the dictionary
                     if (files.TryGetValue(item.FilePath, out FileName? existingFileName))
                     {
@@ -88,7 +89,7 @@ public class DiffGenerator
                         }
 
                         // Update the existing entry if the current timestamp is more recent
-                        if (item.Timestamp > existingFileName.Date)
+                        if (item.Timestamp > existingFileName.Date && item.Timestamp > localLastModified)
                         {
                             existingFileName.UpdateDate(item.Timestamp);
                             _logger.Log($"Updated timestamp for {item.FilePath} to {item.Timestamp}");
@@ -97,9 +98,12 @@ public class DiffGenerator
                     }
                     else
                     {
-                        // Create a new FileName instance and add it to the dictionary if it doesn't exist
-                        files[item.FilePath] = new FileName(item.FilePath, item.Timestamp, ipAddress, port);
-                        _logger.Log($"Added new file {item.FilePath} with timestamp {item.Timestamp}");
+                        if (item.Timestamp > localLastModified)
+                        {
+                            // Create a new FileName instance and add it to the dictionary if it doesn't exist
+                            files[item.FilePath] = new FileName(item.FilePath, item.Timestamp, ipAddress, port);
+                            _logger.Log($"Added new file {item.FilePath} with timestamp {item.Timestamp}");
+                        }
                     }
                 }
             }
