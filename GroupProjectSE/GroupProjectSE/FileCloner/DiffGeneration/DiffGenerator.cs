@@ -8,7 +8,6 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using GroupProjectSE.FileCloner.DiffGenerator;
 using GroupProjectSE.FileCloner.FileClonerLogging;
 
 namespace GroupProjectSE.FileCloner.DiffGeneration;
@@ -32,7 +31,7 @@ public class DiffGenerator
         // List<string> jsonFiles = new List<string>
         // { "C:\\users\\evans samuel biju\\192.168.1.1,8080.json", "C:\\Users\\EVANS SAMUEL BIJU\\192.168.1.2,8081.json" };
 
-        Dictionary<string, GroupProjectSE.FileCloner.DiffGenerator.FileName> files = new();
+        Dictionary<string, FileName> files = new();
 
         // We are converting each JSON file into a class which has a Dictionary of relative file paths and their timestamps
         foreach (string file in jsonFiles)
@@ -72,7 +71,7 @@ public class DiffGenerator
                     _logger.Log($"File name: {item.FileName}, Timestamp: {item.Timestamp}, IP: {ipAddress}, Port: {port}");
 
                     // Check if the file already exists in the dictionary
-                    if (files.TryGetValue(item.FileName, out GroupProjectSE.FileCloner.DiffGenerator.FileName? existingFileName))
+                    if (files.TryGetValue(item.FileName, out FileName? existingFileName))
                     {
                         if (existingFileName == null)
                         {
@@ -90,7 +89,7 @@ public class DiffGenerator
                     else
                     {
                         // Create a new FileName instance and add it to the dictionary if it doesn't exist
-                        files[item.FileName] = new GroupProjectSE.FileCloner.DiffGenerator.FileName(item.FileName, item.Timestamp, ipAddress, port);
+                        files[item.FileName] = new FileName(item.FileName, item.Timestamp, ipAddress, port);
                         _logger.Log($"Added new file {item.FileName} with timestamp {item.Timestamp}");
                     }
                 }
@@ -106,7 +105,7 @@ public class DiffGenerator
     }
 
     // Method to write all files in the dictionary to a file
-    public void WriteAllFilesToFile(Dictionary<string, GroupProjectSE.FileCloner.DiffGenerator.FileName> files, string outputFilePath)
+    public void WriteAllFilesToFile(Dictionary<string, FileName> files, string outputFilePath)
     {
         lock (_syncLock)
         {
@@ -114,7 +113,7 @@ public class DiffGenerator
             using (StreamWriter writer = new StreamWriter(outputFilePath))
             {
                 // writer.WriteLine("List of all files:");
-                foreach (GroupProjectSE.FileCloner.DiffGenerator.FileName file in files.Values)
+                foreach (FileName file in files.Values)
                 {
                     writer.WriteLine(
                         $"{{ \"filePath\": {file.RelativeFileName}, IP Address: {file._ip_address}," +
