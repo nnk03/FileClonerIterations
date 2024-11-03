@@ -43,8 +43,8 @@ public class DiffGenerator
             try
             {
                 string text = File.ReadAllText(file);
-                List<AtomicJsonClass>? jsonFile = JsonSerializer.Deserialize<List<AtomicJsonClass>>(text);
-                if (jsonFile == null)
+                List<AtomicJsonClass>? jsonFileContent = JsonSerializer.Deserialize<List<AtomicJsonClass>>(text);
+                if (jsonFileContent == null)
                 {
                     continue;
                 }
@@ -66,7 +66,7 @@ public class DiffGenerator
                     continue; // Skip this file if the port is invalid
                 }
 
-                foreach (AtomicJsonClass item in jsonFile)
+                foreach (AtomicJsonClass item in jsonFileContent)
                 {
                     _logger.Log($"File name: {item.FileName}, Timestamp: {item.Timestamp}, IP: {ipAddress}, Port: {port}");
 

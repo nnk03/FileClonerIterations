@@ -19,6 +19,7 @@ public class AtomicJsonClass
     public string FileName { get; set; }  // Matches the JSON key
     public DateTime Timestamp { get; set; } // Matches the JSON key
 
+    AtomicJsonClass() { }
     AtomicJsonClass(string fileName, DateTime timestamp)
     {
         FileName = fileName;
