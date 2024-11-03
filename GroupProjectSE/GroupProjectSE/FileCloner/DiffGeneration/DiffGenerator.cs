@@ -43,7 +43,16 @@ public class DiffGenerator
             try
             {
                 string text = File.ReadAllText(file);
-                List<AtomicJsonClass>? jsonFileContent = JsonSerializer.Deserialize<List<AtomicJsonClass>>(text);
+
+                //// Remove all \r\n from the content
+                //string cleanedContent = text.Replace("\r\n", "");
+
+                //// Optional: If you want to remove any other newline variations
+                //cleanedContent = cleanedContent.Replace("\n", "").Replace("\r", "");
+
+                List<AtomicJsonClass>? jsonFileContent =
+                    JsonSerializer.Deserialize<List<AtomicJsonClass>>(text);
+
                 if (jsonFileContent == null)
                 {
                     continue;
@@ -68,10 +77,10 @@ public class DiffGenerator
 
                 foreach (AtomicJsonClass item in jsonFileContent)
                 {
-                    _logger.Log($"File name: {item.FileName}, Timestamp: {item.Timestamp}, IP: {ipAddress}, Port: {port}");
+                    _logger.Log($"File name: {item.FilePath}, Timestamp: {item.Timestamp}, IP: {ipAddress}, Port: {port}");
 
                     // Check if the file already exists in the dictionary
-                    if (files.TryGetValue(item.FileName, out FileName? existingFileName))
+                    if (files.TryGetValue(item.FilePath, out FileName? existingFileName))
                     {
                         if (existingFileName == null)
                         {
@@ -82,15 +91,15 @@ public class DiffGenerator
                         if (item.Timestamp > existingFileName.Date)
                         {
                             existingFileName.UpdateDate(item.Timestamp);
-                            _logger.Log($"Updated timestamp for {item.FileName} to {item.Timestamp}");
+                            _logger.Log($"Updated timestamp for {item.FilePath} to {item.Timestamp}");
                         }
 
                     }
                     else
                     {
                         // Create a new FileName instance and add it to the dictionary if it doesn't exist
-                        files[item.FileName] = new FileName(item.FileName, item.Timestamp, ipAddress, port);
-                        _logger.Log($"Added new file {item.FileName} with timestamp {item.Timestamp}");
+                        files[item.FilePath] = new FileName(item.FilePath, item.Timestamp, ipAddress, port);
+                        _logger.Log($"Added new file {item.FilePath} with timestamp {item.Timestamp}");
                     }
                 }
             }
@@ -109,20 +118,30 @@ public class DiffGenerator
     {
         lock (_syncLock)
         {
+            // Create a list to hold the JSON objects
+            var jsonObjects = new List<object>();
 
-            using (StreamWriter writer = new StreamWriter(outputFilePath))
+            // Populate the list with the required properties
+            foreach (FileName file in files.Values)
             {
-                // writer.WriteLine("List of all files:");
-                foreach (FileName file in files.Values)
-                {
-                    writer.WriteLine(
-                        $"{{ \"filePath\": {file.RelativeFileName}, IP Address: {file._ip_address}," +
-                        $" Port: {file.Port}, Timestamp: {file.Date}, \"fromWhichServer\":\"{file._ip_address}_{file.Port}\" }}"
-                    );
-                }
+                jsonObjects.Add(new {
+                    FilePath = file.RelativeFileName,
+                    FromWhichServer = $"{file._ip_address}_{file.Port}"
+                });
             }
 
-            _logger.Log($"File information written to {outputFilePath}");
+            // Convert the list to JSON format
+            string jsonContent = JsonSerializer.Serialize(jsonObjects, new JsonSerializerOptions {
+                WriteIndented = true // Optional: makes the JSON output more readable
+            });
+
+            // Write JSON to the output file
+            using (StreamWriter writer = new StreamWriter(outputFilePath))
+            {
+                writer.Write(jsonContent);
+            }
+
+            _logger.Log($"File information written to {outputFilePath} in JSON format.");
         }
     }
 }
