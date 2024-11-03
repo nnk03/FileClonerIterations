@@ -27,6 +27,7 @@ public class DiffGenerator
 
     public void GenerateSummary(List<string> jsonFiles)
     {
+        _logger.Log("Generating Summary");
         // Assuming you have a list of JSON file paths
         // List<string> jsonFiles = new List<string>
         // { "C:\\users\\evans samuel biju\\192.168.1.1,8080.json", "C:\\Users\\EVANS SAMUEL BIJU\\192.168.1.2,8081.json" };
@@ -120,6 +121,7 @@ public class DiffGenerator
     // Method to write all files in the dictionary to a file
     public void WriteAllFilesToFile(Dictionary<string, FileName> files, string outputFilePath)
     {
+        _logger.Log($"Writing Summary to {outputFilePath}");
         lock (_syncLock)
         {
             // Create a list to hold the JSON objects
