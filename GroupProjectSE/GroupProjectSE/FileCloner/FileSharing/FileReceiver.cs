@@ -26,6 +26,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
     private Dictionary<string, object> _syncLockForSavingResponse;
 
     private string _myServerAddress;
+    private string _myIP;
 
     // private CommunicatorClient _fileReceiver;
     // CommunicatorServer is much more useful than Communicator Client??
@@ -55,7 +56,9 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
         _fileReceiverServer = new CommunicatorServer();
         _myServerAddress = _fileReceiverServer.Start();
         _myServerAddress = _myServerAddress.Replace(':', '_');
+        _myIP = _myServerAddress.Split('_')[0];
         _logger.Log($"My address is {_myServerAddress}");
+        _logger.Log($"My IP is {_myIP}");
 
         if (Directory.Exists(_configDirectory))
         {
@@ -187,6 +190,15 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
 
         string header = serializedDataList[HeaderIndex];
         string sendToAddress = serializedDataList[AddressIndex];
+        if (!sendToAddress.Contains('_'))
+        {
+            return;
+        }
+        string sendToIp = sendToAddress.Split('_')[0];
+        if (sendToIp == _myIP)
+        {
+            return;
+        }
         string clientId = GetClientId(sendToAddress);
 
         if (serializedData.StartsWith(AckFileRequestHeader))
