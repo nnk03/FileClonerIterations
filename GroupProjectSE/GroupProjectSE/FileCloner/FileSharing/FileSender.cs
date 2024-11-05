@@ -88,6 +88,11 @@ public class FileSender : FileClonerHeaders, INotificationHandler
 
     private void SendFileOverNetwork(string filePath, string clientId)
     {
+        if (!File.Exists(filePath))
+        {
+            return;
+        }
+
         try
         {
             // Open the file with a StreamReader

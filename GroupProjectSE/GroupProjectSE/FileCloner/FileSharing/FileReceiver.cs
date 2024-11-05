@@ -414,6 +414,12 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
         {
             if (!File.Exists(filePath))
             {
+                string? directoryPath = Path.GetDirectoryName(filePath);
+                if (directoryPath != null && !Directory.Exists(directoryPath))
+                {
+                    Directory.CreateDirectory(directoryPath);
+                    _logger.Log($"Creating directory {directoryPath}");
+                }
                 File.Create(filePath).Close();
             }
             return true;
