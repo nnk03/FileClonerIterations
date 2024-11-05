@@ -180,6 +180,11 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
     {
         // after the header contains the serialized data
         string[] serializedDataList = serializedData.Split(':', MessageSplitLength);
+        if (serializedData.Length != MessageSplitLength)
+        {
+            return;
+        }
+
         string header = serializedDataList[HeaderIndex];
         string sendToAddress = serializedDataList[AddressIndex];
         string clientId = GetClientId(sendToAddress);
