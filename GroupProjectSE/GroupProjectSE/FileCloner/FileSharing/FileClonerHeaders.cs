@@ -46,7 +46,7 @@ public class FileClonerHeaders
     protected const string ReceiverConfigFilePathKey = "FilePath";
     protected const string ReceiverConfigSavePathKey = "SavePath";
     protected const string ReceiverConfigTimeStampKey = "Timestamp";
-    protected const string ReceiverConfigFromWhichServerKey = "FromWhichServer";
+    protected const string ReceiverConfigFromWhichHostKey = "FromHostServer";
 
     protected const string SenderConfigFilePathKey = "FilePath";
     protected const string SenderConfigSavePathKey = "SavePath";

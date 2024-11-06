@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -10,6 +11,8 @@ namespace Networking.Communication
     {
         private TcpClient client;
         private Dictionary<string, INotificationHandler> handlers = new();
+        public string? _myIP;
+        public string? _myPort;
 
         public string Start(string serverIP = null, string serverPort = null)
         {
@@ -17,6 +20,16 @@ namespace Networking.Communication
             {
                 client = new TcpClient(serverIP, int.Parse(serverPort));
                 ThreadPool.QueueUserWorkItem(ReceiveData);
+
+                IPEndPoint? localEndPoint = (IPEndPoint?)client.Client.LocalEndPoint;
+                if (localEndPoint != null)
+                {
+                    string remoteIpAddress = localEndPoint.Address.MapToIPv4().ToString();
+                    int remotePort = localEndPoint.Port;
+                    _myIP = remoteIpAddress;
+                    _myPort = remotePort.ToString();
+                }
+
                 return "success";
             }
             catch (Exception e)
@@ -99,5 +112,14 @@ namespace Networking.Communication
         public void RemoveClient(string clientId) { }
 
         public Dictionary<string, TcpClient> GetClientList() { return null; }
+        public string GetMyIP()
+        {
+            return _myIP;
+        }
+
+        public string GetMyPort()
+        {
+            return _myPort;
+        }
     }
 }

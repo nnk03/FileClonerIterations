@@ -14,6 +14,8 @@ namespace Networking.Communication
         private Dictionary<string, TcpClient> clients = new();
         private Dictionary<string, INotificationHandler> handlers = new();
 
+        public string? _myIP;
+        public string? _myPort;
         public string Start(string serverIP = null, string serverPort = null)
         {
             IPAddress ip = IPAddress.Parse(FindIpAddress());
@@ -26,6 +28,8 @@ namespace Networking.Communication
             ThreadPool.QueueUserWorkItem(AcceptClients);
 
             // Return the IP address and port number
+            _myIP = ip.ToString();
+            _myPort = port.ToString();
             return $"{ip}:{port}";
         }
 
@@ -253,6 +257,16 @@ namespace Networking.Communication
         public Dictionary<string, TcpClient> GetClientList()
         {
             return clients;
+        }
+
+        public string GetMyIP()
+        {
+            return _myIP;
+        }
+
+        public string GetMyPort()
+        {
+            return _myPort;
         }
     }
 }

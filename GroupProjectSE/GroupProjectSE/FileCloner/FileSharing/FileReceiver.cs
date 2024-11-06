@@ -49,6 +49,8 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
     {
 
         _fileReceiverServer = CommunicationFactory.GetCommunicator(isClientSide: false);
+        _myIP = _fileReceiverServer.GetMyIP();
+        _myServerAddress = $"{_myIP}_{_fileReceiverServer.GetMyPort()}";
 
 
         _logger.Log("FileReceiver Constructing");
@@ -164,10 +166,10 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
         foreach (JsonElement element in doc.RootElement.EnumerateArray())
         {
             string? filePath = element.GetProperty(ReceiverConfigFilePathKey).GetString();
-            string? fromWhichServer = element.GetProperty(ReceiverConfigFromWhichServerKey).GetString();
-            _logger.Log($"Requesting to clone {filePath} from the server {fromWhichServer}");
+            string? fromWhichHost = element.GetProperty(ReceiverConfigFromWhichHostKey).GetString();
+            _logger.Log($"Requesting to clone {filePath} from the server {fromWhichHost}");
 
-            if (filePath == null || fromWhichServer == null)
+            if (filePath == null || fromWhichHost == null)
             {
                 continue;
             }
@@ -175,7 +177,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
             // send the request to clone this file
             _fileReceiverServer.Send(
                 GetMessage(CloneFilesHeader, filePath),
-                CurrentModuleName, GetClientId(fromWhichServer)
+                CurrentModuleName, GetClientId(fromWhichHost)
                 );
         }
 

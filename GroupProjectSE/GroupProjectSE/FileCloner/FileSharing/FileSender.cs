@@ -28,6 +28,9 @@ public class FileSender : FileClonerHeaders, INotificationHandler
         _logger.Log("FileSender Constructing");
         _fileSender = CommunicationFactory.GetCommunicator(isClientSide: true);
 
+        _myIP = _fileSender.GetMyIP();
+        _myServerAddress = $"{_myIP}_{_fileSender.GetMyPort()}";
+
         // create a file server in each device to serve the files
         //_fileServer = new CommunicatorServer();
         //_myServerAddress = _fileServer.Start();
