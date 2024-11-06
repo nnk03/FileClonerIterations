@@ -14,8 +14,10 @@ using Networking;
 namespace GroupProjectSE.FileCloning.FileSharing;
 public class FileSender : FileClonerHeaders, INotificationHandler
 {
+    // FileSender is the students, acting as clients
     private const string CurrentModule = "FileSender";
     private CommunicatorServer _fileServer;
+    private static ICommunicator s_communicatorClient;
 
     private string _myServerAddress;
     private string _myIP;
@@ -24,20 +26,21 @@ public class FileSender : FileClonerHeaders, INotificationHandler
     public FileSender() : base(CurrentModule)
     {
         _logger.Log("FileSender Constructing");
+        s_communicatorClient = CommunicationFactory.GetCommunicator(isClientSide: true);
 
         // create a file server in each device to serve the files
-        _fileServer = new CommunicatorServer();
-        _myServerAddress = _fileServer.Start();
-        _myServerAddress = _myServerAddress.Replace(':', '_');
-        _myIP = _myServerAddress.Split('_')[0];
-        _logger.Log($"My Address is {_myServerAddress}");
-        _logger.Log($"My IP is {_myIP}");
+        //_fileServer = new CommunicatorServer();
+        //_myServerAddress = _fileServer.Start();
+        //_myServerAddress = _myServerAddress.Replace(':', '_');
+        //_myIP = _myServerAddress.Split('_')[0];
+        //_logger.Log($"My Address is {_myServerAddress}");
+        //_logger.Log($"My IP is {_myIP}");
 
-        // subscribe to messages with module name as "FileSender"
-        _fileServer.Subscribe(CurrentModule, this, false);
+        //// subscribe to messages with module name as "FileSender"
+        //_fileServer.Subscribe(CurrentModule, this, false);
 
-        // gets the reference of the map
-        _clientIdToSocket = _fileServer.GetClientList();
+        //// gets the reference of the map
+        //_clientIdToSocket = _fileServer.GetClientList();
     }
 
     public void OnDataReceived(string serializedData)

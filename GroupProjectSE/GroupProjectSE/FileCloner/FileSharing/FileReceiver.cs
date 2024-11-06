@@ -19,7 +19,9 @@ namespace GroupProjectSE.FileCloning.FileSharing;
 
 public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandler
 {
+    // FileReceiver is the server present on the main host
     private const string CurrentModuleName = "FileReceiver";
+    private static ICommunicator _fileReceiverServer;
 
     // this lock is necessary when writing to files
     private object _fileWriteLock;
@@ -31,7 +33,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
     // private CommunicatorClient _fileReceiver;
     // CommunicatorServer is much more useful than Communicator Client??
     // for broadcasting messages
-    private CommunicatorServer _fileReceiverServer;
+    // private CommunicatorServer _fileReceiverServer;
 
     // these fields are only necessary for Receiver
     private string _receiverConfigFilePath = ".\\requestConfig.json";
@@ -45,6 +47,10 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
 
     public FileReceiver() : base(CurrentModuleName)
     {
+
+        s_communicatorServer = CommunicationFactory.GetCommunicator(isClientSide: false);
+
+
         _logger.Log("FileReceiver Constructing");
         _fileWriteLock = new();
         _requestFilesPathList = new();
@@ -53,12 +59,12 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
         // for each file to be received from a particular device D
         // creates a new FileReceiver which handles the receiving and saving of the particular file
         // _fileReceiver = new CommunicatorClient();
-        _fileReceiverServer = new CommunicatorServer();
-        _myServerAddress = _fileReceiverServer.Start();
-        _myServerAddress = _myServerAddress.Replace(':', '_');
-        _myIP = _myServerAddress.Split('_')[0];
-        _logger.Log($"My address is {_myServerAddress}");
-        _logger.Log($"My IP is {_myIP}");
+        //_fileReceiverServer = new CommunicatorServer();
+        //_myServerAddress = _fileReceiverServer.Start();
+        //_myServerAddress = _myServerAddress.Replace(':', '_');
+        //_myIP = _myServerAddress.Split('_')[0];
+        //_logger.Log($"My address is {_myServerAddress}");
+        //_logger.Log($"My IP is {_myIP}");
 
         if (Directory.Exists(_configDirectory))
         {
