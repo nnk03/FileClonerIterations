@@ -21,7 +21,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
 {
     // FileReceiver is the server present on the main host
     private const string CurrentModuleName = "FileReceiver";
-    private static ICommunicator _fileReceiverServer;
+    private ICommunicator _fileReceiverServer;
 
     // this lock is necessary when writing to files
     private object _fileWriteLock;
@@ -48,7 +48,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
     public FileReceiver() : base(CurrentModuleName)
     {
 
-        s_communicatorServer = CommunicationFactory.GetCommunicator(isClientSide: false);
+        _fileReceiverServer = CommunicationFactory.GetCommunicator(isClientSide: false);
 
 
         _logger.Log("FileReceiver Constructing");
@@ -441,7 +441,8 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
 
     public void StopFileReceiver()
     {
-        _fileReceiverServer.Stop();
+        _logger.Log("Stopping File Receiver");
+        //_fileReceiverServer.Stop();
     }
 
 }

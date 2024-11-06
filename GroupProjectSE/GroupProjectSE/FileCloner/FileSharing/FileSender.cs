@@ -17,7 +17,7 @@ public class FileSender : FileClonerHeaders, INotificationHandler
     // FileSender is the students, acting as clients
     private const string CurrentModule = "FileSender";
     //private CommunicatorServer _fileServer;
-    private static ICommunicator _fileServer;
+    private ICommunicator _fileSender;
 
     private string _myServerAddress;
     private string _myIP;
@@ -26,7 +26,7 @@ public class FileSender : FileClonerHeaders, INotificationHandler
     public FileSender() : base(CurrentModule)
     {
         _logger.Log("FileSender Constructing");
-        s_communicatorClient = CommunicationFactory.GetCommunicator(isClientSide: true);
+        _fileSender = CommunicationFactory.GetCommunicator(isClientSide: true);
 
         // create a file server in each device to serve the files
         //_fileServer = new CommunicatorServer();
@@ -36,8 +36,8 @@ public class FileSender : FileClonerHeaders, INotificationHandler
         //_logger.Log($"My Address is {_myServerAddress}");
         //_logger.Log($"My IP is {_myIP}");
 
-        //// subscribe to messages with module name as "FileSender"
-        //_fileServer.Subscribe(CurrentModule, this, false);
+        // subscribe to messages with module name as "FileSender"
+        _fileSender.Subscribe(CurrentModule, this, false);
 
         //// gets the reference of the map
         //_clientIdToSocket = _fileServer.GetClientList();
@@ -127,7 +127,7 @@ public class FileSender : FileClonerHeaders, INotificationHandler
                 );
 
                 // Send the chunk over the network
-                _fileServer.Send(
+                _fileSender.Send(
                     GetMessage(AckCloneFilesHeader, $"{filePath}:{count}/{numberOfTransmissionsRequired}:{chunk}"),
                     CurrentModule, clientId);
                 ++count;
@@ -184,7 +184,7 @@ public class FileSender : FileClonerHeaders, INotificationHandler
         //    fileDataList, new JsonSerializerOptions { WriteIndented = true }
         //);
 
-        _fileServer.Send(
+        _fileSender.Send(
             GetMessage(AckFileRequestHeader, jsonResponse),
             CurrentModule, clientId);
     }
@@ -204,7 +204,7 @@ public class FileSender : FileClonerHeaders, INotificationHandler
     public void StopFileSender()
     {
         _logger.Log($"Stopping File Server {_myServerAddress}");
-        _fileServer.Stop();
+        //_fileSender.Stop();
     }
 
 }
