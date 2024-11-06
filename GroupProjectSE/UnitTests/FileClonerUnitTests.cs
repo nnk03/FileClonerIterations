@@ -21,10 +21,9 @@ namespace UnitTests
         {
             // config files are in the path
             // C:\Users\<username\AppData\Local\GroupProjectSE\FileCloner
-            FileCloner fileCloner = new();
 
-            FileReceiver fileReceiver = fileCloner._fileReceiver;
-            FileSender fileSender = fileCloner._fileSender;
+            FileReceiver fileReceiver = FileCloner.GetFileReceiver();
+            FileSender fileSender = FileCloner.GetFileSender();
 
             fileReceiver.RequestFiles();
         }
@@ -34,10 +33,8 @@ namespace UnitTests
         {
             // create dummy files with dummy content
             // test it using the API
-            FileCloner fileCloner = new();
-
-            FileReceiver fileReceiver = fileCloner._fileReceiver;
-            FileSender fileSender = fileCloner._fileSender;
+            FileReceiver fileReceiver = FileCloner.GetFileReceiver();
+            FileSender fileSender = FileCloner.GetFileSender();
 
             fileReceiver.GenerateDiff();
 

@@ -7,21 +7,20 @@ using GroupProjectSE.FileCloning.FileSharing;
 
 namespace GroupProjectSE.FileCloner;
 
-public class FileCloner
+public static class FileCloner
 {
-    public FileSender _fileSender;
-    public FileReceiver _fileReceiver;
+    private static FileSender s_fileSender = new();
+    private static FileReceiver s_fileReceiver = new();
 
-    public FileCloner()
+    public static FileSender GetFileSender()
     {
-        // first start the Sending server
-        _fileSender = new FileSender();
-        _fileReceiver = new FileReceiver();
+        return s_fileSender;
     }
 
-    ~FileCloner()
+    public static FileReceiver GetFileReceiver()
     {
-        _fileReceiver.StopFileReceiver();
-        _fileSender.StopFileSender();
+        return s_fileReceiver;
     }
+
+
 }

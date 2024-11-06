@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 namespace GroupProjectSE.FileCloning.FileSharing;
 public interface IFileReceiver
 {
+    // this interface is for the device which request to clone files
+    // in the current project, it is the meeting host, who requests to clone the files
+
     /// <summary>
     /// This function is to be called when user wants to request for the files
     /// </summary>
