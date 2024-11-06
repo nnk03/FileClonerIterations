@@ -18,6 +18,7 @@ public class FileSender : FileClonerHeaders, INotificationHandler
     private CommunicatorServer _fileServer;
 
     private string _myServerAddress;
+    private string _myIP;
 
     // get clientIdToSocket Dictionary
     public FileSender() : base(CurrentModule)
@@ -28,7 +29,9 @@ public class FileSender : FileClonerHeaders, INotificationHandler
         _fileServer = new CommunicatorServer();
         _myServerAddress = _fileServer.Start();
         _myServerAddress = _myServerAddress.Replace(':', '_');
+        _myIP = _myServerAddress.Split('_')[0];
         _logger.Log($"My Address is {_myServerAddress}");
+        _logger.Log($"My IP is {_myIP}");
 
         // subscribe to messages with module name as "FileSender"
         _fileServer.Subscribe(CurrentModule, this, false);
@@ -48,6 +51,15 @@ public class FileSender : FileClonerHeaders, INotificationHandler
 
         string header = serializedDataList[HeaderIndex];
         string sendToAddress = serializedDataList[AddressIndex];
+        if (!sendToAddress.Contains('_'))
+        {
+            return;
+        }
+        string sendToIp = sendToAddress.Split('_')[0];
+        if (sendToIp == _myIP)
+        {
+            return;
+        }
         string clientId = GetClientId(sendToAddress);
 
         if (header == FileRequestHeader)
@@ -76,6 +88,11 @@ public class FileSender : FileClonerHeaders, INotificationHandler
 
     private void SendFileOverNetwork(string filePath, string clientId)
     {
+        if (!File.Exists(filePath))
+        {
+            return;
+        }
+
         try
         {
             // Open the file with a StreamReader
