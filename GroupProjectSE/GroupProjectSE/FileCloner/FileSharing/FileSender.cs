@@ -16,8 +16,8 @@ public class FileSender : FileClonerHeaders, INotificationHandler
 {
     // FileSender is the students, acting as clients
     private const string CurrentModule = "FileSender";
-    private CommunicatorServer _fileServer;
-    private static ICommunicator s_communicatorClient;
+    //private CommunicatorServer _fileServer;
+    private static ICommunicator _fileServer;
 
     private string _myServerAddress;
     private string _myIP;
