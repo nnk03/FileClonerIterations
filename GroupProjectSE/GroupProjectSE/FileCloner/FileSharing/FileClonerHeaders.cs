@@ -157,15 +157,23 @@ public class FileClonerHeaders
     /// </summary>
     /// <param name="socket"></param>
     /// <returns></returns>
-    protected string GetAddressFromSocket(TcpClient socket)
+    protected string GetAddressFromSocket(TcpClient socket, bool otherEnd = false)
     {
-        IPEndPoint? localEndPoint = (IPEndPoint?)socket.Client.LocalEndPoint;
-        if (localEndPoint == null)
+        IPEndPoint endPoint = null;
+        if (!otherEnd)
+        {
+            endPoint = (IPEndPoint?)socket.Client.LocalEndPoint;
+        }
+        else
+        {
+            endPoint = (IPEndPoint?)socket.Client.RemoteEndPoint;
+        }
+        if (endPoint == null)
         {
             return "";
         }
-        string ipAddress = localEndPoint.Address.MapToIPv4().ToString();
-        string port = localEndPoint.Port.ToString();
+        string ipAddress = endPoint.Address.MapToIPv4().ToString();
+        string port = endPoint.Port.ToString();
 
         // using underscores since apparently fileNames cannot have ':'
         string address = GetConcatenatedAddress(ipAddress, port);
@@ -177,31 +185,33 @@ public class FileClonerHeaders
     /// `clientDictionary`
     /// </summary>
     /// <param name="socket"></param>
-    public void OnClientJoined(TcpClient socket)
-    {
-        string address = GetAddressFromSocket(socket);
-        _logger.Log($"Client Joined : {address}");
-        lock (_syncLock)
-        {
-            _clientDictionary.Add(address, socket);
-        }
-    }
+    //public void OnClientJoined(TcpClient socket)
+    //{
+    //    string address = GetAddressFromSocket(socket);
+    //    _logger.Log($"Client Joined : {address}");
+    //    Console.WriteLine($"Client Joined : {address}");
+    //    lock (_syncLock)
+    //    {
+    //        _clientDictionary.Add(address, socket);
+    //    }
+    //}
 
-    /// <summary>
-    /// if clientId key is present in the dictionary, remove it
-    /// </summary>
-    /// <param name="clientId"></param>
-    public void OnClientLeft(string clientId)
-    {
-        _logger.Log($"Client left, client ID is: {clientId}");
-        lock (_syncLock)
-        {
-            if (_clientDictionary.ContainsKey(clientId))
-            {
-                _clientDictionary.Remove(clientId);
-            }
-        }
-    }
+    ///// <summary>
+    ///// if clientId key is present in the dictionary, remove it
+    ///// </summary>
+    ///// <param name="clientId"></param>
+    //public void OnClientLeft(string clientId)
+    //{
+    //    _logger.Log($"Client left, client ID is: {clientId}");
+    //    Console.WriteLine($"Client left, client ID is: {clientId}");
+    //    lock (_syncLock)
+    //    {
+    //        if (_clientDictionary.ContainsKey(clientId))
+    //        {
+    //            _clientDictionary.Remove(clientId);
+    //        }
+    //    }
+    //}
 
 
 }

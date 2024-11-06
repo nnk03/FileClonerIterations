@@ -20,7 +20,8 @@ namespace GroupProjectSE.FileCloning.FileSharing;
 public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandler
 {
     // FileReceiver is the server present on the main host
-    private const string CurrentModuleName = "FileReceiver";
+    private const string SendToModule = "FileSender";
+    private const string CurrentModule = "FileReceiver";
     private ICommunicator _fileReceiverServer;
 
     // this lock is necessary when writing to files
@@ -45,7 +46,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
 
     private List<string> _requestFilesPathList;
 
-    public FileReceiver() : base(CurrentModuleName)
+    public FileReceiver() : base(CurrentModule)
     {
 
         _fileReceiverServer = CommunicationFactory.GetCommunicator(isClientSide: false);
@@ -94,7 +95,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
 
         // Subscribe for messages with module name as "FileReceiver"
         // _fileReceiver.Subscribe(CurrentModuleName, this, false);
-        _fileReceiverServer.Subscribe(CurrentModuleName, this, false);
+        _fileReceiverServer.Subscribe(CurrentModule, this, false);
 
         // when starting, read the config file
         SaveFileRequests();
@@ -115,7 +116,10 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
         // broadcast the request
         _fileReceiverServer.Send(
             GetMessage(FileRequestHeader, sendFileRequests),
-            CurrentModuleName, null);
+            SendToModule, null);
+
+        // for debugging
+        Console.WriteLine("Requested");
     }
 
     /// <summary>
@@ -177,9 +181,10 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
             // send the request to clone this file
             _fileReceiverServer.Send(
                 GetMessage(CloneFilesHeader, filePath),
-                CurrentModuleName, GetClientId(fromWhichHost)
+                SendToModule, GetClientId(fromWhichHost)
                 );
         }
+        Console.WriteLine("Requested to Clone");
 
 
     }
@@ -191,8 +196,9 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
     public void OnDataReceived(string serializedData)
     {
         // after the header contains the serialized data
+        Console.WriteLine(serializedData);
         string[] serializedDataList = serializedData.Split(':', MessageSplitLength);
-        if (serializedData.Length != MessageSplitLength)
+        if (serializedDataList.Length != MessageSplitLength)
         {
             return;
         }
@@ -446,6 +452,41 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
     {
         _logger.Log("Stopping File Receiver");
         //_fileReceiverServer.Stop();
+    }
+
+    /// <summary>
+    /// Adds the key, value pair (address, socket) to the 
+    /// `clientDictionary`
+    /// </summary>
+    /// <param name="socket"></param>
+    public void OnClientJoined(TcpClient socket)
+    {
+        string address = GetAddressFromSocket(socket, otherEnd: true);
+        _logger.Log($"Client Joined : {address}");
+        Console.WriteLine($"Client Joined : {address}");
+        lock (_syncLock)
+        {
+            _clientDictionary.Add(address, socket);
+        }
+        _fileReceiverServer.AddClient(address, socket);
+    }
+
+    /// <summary>
+    /// if clientId key is present in the dictionary, remove it
+    /// </summary>
+    /// <param name="clientId"></param>
+    public void OnClientLeft(string clientId)
+    {
+        _logger.Log($"Client left, client ID is: {clientId}");
+        Console.WriteLine($"Client left, client ID is: {clientId}");
+        lock (_syncLock)
+        {
+            if (_clientDictionary.ContainsKey(clientId))
+            {
+                _clientDictionary.Remove(clientId);
+            }
+        }
+        _fileReceiverServer.RemoveClient(clientId);
     }
 
 }

@@ -10,11 +10,13 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Networking.Communication;
 using Networking;
+using System.Net.Sockets;
 
 namespace GroupProjectSE.FileCloning.FileSharing;
 public class FileSender : FileClonerHeaders, INotificationHandler
 {
     // FileSender is the students, acting as clients
+    private const string SendToModule = "FileReceiver";
     private const string CurrentModule = "FileSender";
     //private CommunicatorServer _fileServer;
     private ICommunicator _fileSender;
@@ -50,7 +52,7 @@ public class FileSender : FileClonerHeaders, INotificationHandler
     {
         // after the header contains the serialized data
         string[] serializedDataList = serializedData.Split(':', MessageSplitLength);
-        if (serializedData.Length != MessageSplitLength)
+        if (serializedDataList.Length != MessageSplitLength)
         {
             return;
         }
@@ -132,7 +134,7 @@ public class FileSender : FileClonerHeaders, INotificationHandler
                 // Send the chunk over the network, to the server, hence giving null from client side
                 _fileSender.Send(
                     GetMessage(AckCloneFilesHeader, $"{filePath}:{count}/{numberOfTransmissionsRequired}:{chunk}"),
-                    CurrentModule, null);
+                    SendToModule, null);
                 ++count;
             }
         }
@@ -189,7 +191,7 @@ public class FileSender : FileClonerHeaders, INotificationHandler
 
         _fileSender.Send(
             GetMessage(AckFileRequestHeader, jsonResponse),
-            CurrentModule, null);
+            SendToModule, null);
     }
 
     /// <summary>
@@ -210,4 +212,36 @@ public class FileSender : FileClonerHeaders, INotificationHandler
         //_fileSender.Stop();
     }
 
+    /// <summary>
+    /// Adds the key, value pair (address, socket) to the 
+    /// `clientDictionary`
+    /// </summary>
+    /// <param name="socket"></param>
+    public void OnClientJoined(TcpClient socket)
+    {
+        string address = GetAddressFromSocket(socket, otherEnd: true);
+        _logger.Log($"Client Joined : {address}");
+        Console.WriteLine($"Client Joined : {address}");
+        lock (_syncLock)
+        {
+            _clientDictionary.Add(address, socket);
+        }
+    }
+
+    /// <summary>
+    /// if clientId key is present in the dictionary, remove it
+    /// </summary>
+    /// <param name="clientId"></param>
+    public void OnClientLeft(string clientId)
+    {
+        _logger.Log($"Client left, client ID is: {clientId}");
+        Console.WriteLine($"Client left, client ID is: {clientId}");
+        lock (_syncLock)
+        {
+            if (_clientDictionary.ContainsKey(clientId))
+            {
+                _clientDictionary.Remove(clientId);
+            }
+        }
+    }
 }

@@ -116,6 +116,7 @@ public class DiffGenerator
 
         // Call method to write all files to a text file
         WriteAllFilesToFile(files, _diffFilePath);
+        Console.WriteLine("Summary Generated");
     }
 
     // Method to write all files in the dictionary to a file
