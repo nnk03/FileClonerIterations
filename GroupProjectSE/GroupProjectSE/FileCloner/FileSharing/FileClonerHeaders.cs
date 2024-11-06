@@ -167,7 +167,7 @@ public class FileClonerHeaders
         string ipAddress = localEndPoint.Address.MapToIPv4().ToString();
         string port = localEndPoint.Port.ToString();
 
-        // using underscores since apparently fileNames cannot have :
+        // using underscores since apparently fileNames cannot have ':'
         string address = GetConcatenatedAddress(ipAddress, port);
         return address;
     }
