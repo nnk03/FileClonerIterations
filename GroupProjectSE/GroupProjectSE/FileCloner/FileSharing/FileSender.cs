@@ -14,8 +14,10 @@ using Networking;
 namespace GroupProjectSE.FileCloning.FileSharing;
 public class FileSender : FileClonerHeaders, INotificationHandler
 {
+    // FileSender is the students, acting as clients
     private const string CurrentModule = "FileSender";
-    private CommunicatorServer _fileServer;
+    //private CommunicatorServer _fileServer;
+    private ICommunicator _fileSender;
 
     private string _myServerAddress;
     private string _myIP;
@@ -24,20 +26,24 @@ public class FileSender : FileClonerHeaders, INotificationHandler
     public FileSender() : base(CurrentModule)
     {
         _logger.Log("FileSender Constructing");
+        _fileSender = CommunicationFactory.GetCommunicator(isClientSide: true);
+
+        _myIP = _fileSender.GetMyIP();
+        _myServerAddress = $"{_myIP}_{_fileSender.GetMyPort()}";
 
         // create a file server in each device to serve the files
-        _fileServer = new CommunicatorServer();
-        _myServerAddress = _fileServer.Start();
-        _myServerAddress = _myServerAddress.Replace(':', '_');
-        _myIP = _myServerAddress.Split('_')[0];
-        _logger.Log($"My Address is {_myServerAddress}");
-        _logger.Log($"My IP is {_myIP}");
+        //_fileServer = new CommunicatorServer();
+        //_myServerAddress = _fileServer.Start();
+        //_myServerAddress = _myServerAddress.Replace(':', '_');
+        //_myIP = _myServerAddress.Split('_')[0];
+        //_logger.Log($"My Address is {_myServerAddress}");
+        //_logger.Log($"My IP is {_myIP}");
 
         // subscribe to messages with module name as "FileSender"
-        _fileServer.Subscribe(CurrentModule, this, false);
+        _fileSender.Subscribe(CurrentModule, this, false);
 
-        // gets the reference of the map
-        _clientIdToSocket = _fileServer.GetClientList();
+        //// gets the reference of the map
+        //_clientIdToSocket = _fileServer.GetClientList();
     }
 
     public void OnDataReceived(string serializedData)
@@ -123,10 +129,10 @@ public class FileSender : FileClonerHeaders, INotificationHandler
                     + $" {clientId}"
                 );
 
-                // Send the chunk over the network
-                _fileServer.Send(
+                // Send the chunk over the network, to the server, hence giving null from client side
+                _fileSender.Send(
                     GetMessage(AckCloneFilesHeader, $"{filePath}:{count}/{numberOfTransmissionsRequired}:{chunk}"),
-                    CurrentModule, clientId);
+                    CurrentModule, null);
                 ++count;
             }
         }
@@ -181,9 +187,9 @@ public class FileSender : FileClonerHeaders, INotificationHandler
         //    fileDataList, new JsonSerializerOptions { WriteIndented = true }
         //);
 
-        _fileServer.Send(
+        _fileSender.Send(
             GetMessage(AckFileRequestHeader, jsonResponse),
-            CurrentModule, clientId);
+            CurrentModule, null);
     }
 
     /// <summary>
@@ -201,7 +207,7 @@ public class FileSender : FileClonerHeaders, INotificationHandler
     public void StopFileSender()
     {
         _logger.Log($"Stopping File Server {_myServerAddress}");
-        _fileServer.Stop();
+        //_fileSender.Stop();
     }
 
 }

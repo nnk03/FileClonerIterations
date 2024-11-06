@@ -1,5 +1,7 @@
 ﻿using GroupProjectSE.FileCloner;
 using GroupProjectSE.FileCloning.FileSharing;
+using Networking;
+using Networking.Communication;
 
 namespace TestConsole
 {
@@ -7,17 +9,33 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
-            //FileCloner cloner = new();
-            //FileReceiver fileReceiver = cloner._fileReceiver;
-            //FileSender fileSender = cloner._fileSender;
+            CommunicatorServer server =
+                (CommunicatorServer)CommunicationFactory.GetCommunicator(isClientSide: false);
+            //CommunicatorClient client =
+            //    (CommunicatorClient)CommunicationFactory.GetCommunicator(isClientSide: true);
+
+            string serverAddress = server.Start();
+            string serverIP = serverAddress.Split(':')[0];
+            string serverPort = serverAddress.Split(":")[1];
+            Console.WriteLine($"Server Address is {serverAddress}");
+
+            //client.Start(serverIP, serverPort);
+            //Console.WriteLine($"Client address is {client.GetMyIP()}:{client.GetMyPort()}");
+
+
+            FileReceiver fileReceiver = FileCloner.GetFileReceiver();
+            //FileSender fileSender = FileCloner.GetFileSender();
 
             //fileReceiver.RequestFiles();
 
-            //File.Create("C:\\dev2\\dummy.txt").Close();
 
-            //Directory.CreateDirectory("C:\\dev2\\dummy.txt");
-            string filePath = "C:\\dev2\\dummy.txt";
-            Console.WriteLine(Path.GetDirectoryName(filePath));
+            while (true)
+            {
+            }
+
+
+            //client.Stop();
+            server.Stop();
 
         }
     }

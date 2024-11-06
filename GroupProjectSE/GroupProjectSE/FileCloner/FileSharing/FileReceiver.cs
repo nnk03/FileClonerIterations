@@ -19,7 +19,9 @@ namespace GroupProjectSE.FileCloning.FileSharing;
 
 public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandler
 {
+    // FileReceiver is the server present on the main host
     private const string CurrentModuleName = "FileReceiver";
+    private ICommunicator _fileReceiverServer;
 
     // this lock is necessary when writing to files
     private object _fileWriteLock;
@@ -31,7 +33,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
     // private CommunicatorClient _fileReceiver;
     // CommunicatorServer is much more useful than Communicator Client??
     // for broadcasting messages
-    private CommunicatorServer _fileReceiverServer;
+    // private CommunicatorServer _fileReceiverServer;
 
     // these fields are only necessary for Receiver
     private string _receiverConfigFilePath = ".\\requestConfig.json";
@@ -45,6 +47,12 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
 
     public FileReceiver() : base(CurrentModuleName)
     {
+
+        _fileReceiverServer = CommunicationFactory.GetCommunicator(isClientSide: false);
+        _myIP = _fileReceiverServer.GetMyIP();
+        _myServerAddress = $"{_myIP}_{_fileReceiverServer.GetMyPort()}";
+
+
         _logger.Log("FileReceiver Constructing");
         _fileWriteLock = new();
         _requestFilesPathList = new();
@@ -53,12 +61,12 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
         // for each file to be received from a particular device D
         // creates a new FileReceiver which handles the receiving and saving of the particular file
         // _fileReceiver = new CommunicatorClient();
-        _fileReceiverServer = new CommunicatorServer();
-        _myServerAddress = _fileReceiverServer.Start();
-        _myServerAddress = _myServerAddress.Replace(':', '_');
-        _myIP = _myServerAddress.Split('_')[0];
-        _logger.Log($"My address is {_myServerAddress}");
-        _logger.Log($"My IP is {_myIP}");
+        //_fileReceiverServer = new CommunicatorServer();
+        //_myServerAddress = _fileReceiverServer.Start();
+        //_myServerAddress = _myServerAddress.Replace(':', '_');
+        //_myIP = _myServerAddress.Split('_')[0];
+        //_logger.Log($"My address is {_myServerAddress}");
+        //_logger.Log($"My IP is {_myIP}");
 
         if (Directory.Exists(_configDirectory))
         {
@@ -103,7 +111,8 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
         // broadcast the request to all file servers
         string sendFileRequests = _serializer.Serialize(_requestFilesPathList);
         _logger.Log("Serialized request : " + sendFileRequests);
-        // client can't really send broadcast, hence using the server
+
+        // broadcast the request
         _fileReceiverServer.Send(
             GetMessage(FileRequestHeader, sendFileRequests),
             CurrentModuleName, null);
@@ -157,10 +166,10 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
         foreach (JsonElement element in doc.RootElement.EnumerateArray())
         {
             string? filePath = element.GetProperty(ReceiverConfigFilePathKey).GetString();
-            string? fromWhichServer = element.GetProperty(ReceiverConfigFromWhichServerKey).GetString();
-            _logger.Log($"Requesting to clone {filePath} from the server {fromWhichServer}");
+            string? fromWhichHost = element.GetProperty(ReceiverConfigFromWhichHostKey).GetString();
+            _logger.Log($"Requesting to clone {filePath} from the server {fromWhichHost}");
 
-            if (filePath == null || fromWhichServer == null)
+            if (filePath == null || fromWhichHost == null)
             {
                 continue;
             }
@@ -168,7 +177,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
             // send the request to clone this file
             _fileReceiverServer.Send(
                 GetMessage(CloneFilesHeader, filePath),
-                CurrentModuleName, GetClientId(fromWhichServer)
+                CurrentModuleName, GetClientId(fromWhichHost)
                 );
         }
 
@@ -383,13 +392,13 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
     /// </returns>
     private string GetMyAddress(TcpClient socket)
     {
-        IPEndPoint? remoteEndPoint = (IPEndPoint?)socket.Client.RemoteEndPoint;
-        if (remoteEndPoint == null)
+        IPEndPoint? localEndPoint = (IPEndPoint?)socket.Client.LocalEndPoint;
+        if (localEndPoint == null)
         {
             return "";
         }
-        string ipAddress = remoteEndPoint.Address.ToString();
-        string port = remoteEndPoint.Port.ToString();
+        string ipAddress = localEndPoint.Address.MapToIPv4().ToString();
+        string port = localEndPoint.Port.ToString();
         // using underscores since apparently fileNames cannot have :
         string address = GetConcatenatedAddress(ipAddress, port);
         _logger.Log($"My Address is {address}");
@@ -435,7 +444,8 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
 
     public void StopFileReceiver()
     {
-        _fileReceiverServer.Stop();
+        _logger.Log("Stopping File Receiver");
+        //_fileReceiverServer.Stop();
     }
 
 }

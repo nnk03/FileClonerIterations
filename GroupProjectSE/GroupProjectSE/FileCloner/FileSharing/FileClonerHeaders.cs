@@ -46,7 +46,7 @@ public class FileClonerHeaders
     protected const string ReceiverConfigFilePathKey = "FilePath";
     protected const string ReceiverConfigSavePathKey = "SavePath";
     protected const string ReceiverConfigTimeStampKey = "Timestamp";
-    protected const string ReceiverConfigFromWhichServerKey = "FromWhichServer";
+    protected const string ReceiverConfigFromWhichHostKey = "FromHostServer";
 
     protected const string SenderConfigFilePathKey = "FilePath";
     protected const string SenderConfigSavePathKey = "SavePath";
@@ -159,15 +159,15 @@ public class FileClonerHeaders
     /// <returns></returns>
     protected string GetAddressFromSocket(TcpClient socket)
     {
-        IPEndPoint? remoteEndPoint = (IPEndPoint?)socket.Client.RemoteEndPoint;
-        if (remoteEndPoint == null)
+        IPEndPoint? localEndPoint = (IPEndPoint?)socket.Client.LocalEndPoint;
+        if (localEndPoint == null)
         {
             return "";
         }
-        string ipAddress = remoteEndPoint.Address.ToString();
-        string port = remoteEndPoint.Port.ToString();
+        string ipAddress = localEndPoint.Address.MapToIPv4().ToString();
+        string port = localEndPoint.Port.ToString();
 
-        // using underscores since apparently fileNames cannot have :
+        // using underscores since apparently fileNames cannot have ':'
         string address = GetConcatenatedAddress(ipAddress, port);
         return address;
     }

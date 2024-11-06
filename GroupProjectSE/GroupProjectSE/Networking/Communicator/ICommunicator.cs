@@ -99,5 +99,8 @@ namespace Networking.Communication
         /// </summary>
         /// <returns> Dictionary of all clients connected to the server. </returns>
         public Dictionary<string, TcpClient> GetClientList();
+
+        public string GetMyIP();
+        public string GetMyPort();
     }
 }
