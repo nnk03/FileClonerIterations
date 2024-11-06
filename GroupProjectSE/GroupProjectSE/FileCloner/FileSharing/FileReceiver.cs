@@ -109,7 +109,8 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
         // broadcast the request to all file servers
         string sendFileRequests = _serializer.Serialize(_requestFilesPathList);
         _logger.Log("Serialized request : " + sendFileRequests);
-        // client can't really send broadcast, hence using the server
+
+        // broadcast the request
         _fileReceiverServer.Send(
             GetMessage(FileRequestHeader, sendFileRequests),
             CurrentModuleName, null);

@@ -126,10 +126,10 @@ public class FileSender : FileClonerHeaders, INotificationHandler
                     + $" {clientId}"
                 );
 
-                // Send the chunk over the network
+                // Send the chunk over the network, to the server, hence giving null from client side
                 _fileSender.Send(
                     GetMessage(AckCloneFilesHeader, $"{filePath}:{count}/{numberOfTransmissionsRequired}:{chunk}"),
-                    CurrentModule, clientId);
+                    CurrentModule, null);
                 ++count;
             }
         }
@@ -186,7 +186,7 @@ public class FileSender : FileClonerHeaders, INotificationHandler
 
         _fileSender.Send(
             GetMessage(AckFileRequestHeader, jsonResponse),
-            CurrentModule, clientId);
+            CurrentModule, null);
     }
 
     /// <summary>
