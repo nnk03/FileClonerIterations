@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GroupProjectSE\GroupProjectSE.csproj" />
-    <ProjectReference Include="..\TestConsoleClient\TestConsoleClient.csproj" />
   </ItemGroup>
 
 </Project>

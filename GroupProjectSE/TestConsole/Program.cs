@@ -2,58 +2,20 @@
 using GroupProjectSE.FileCloning.FileSharing;
 using Networking;
 using Networking.Communication;
+using System.Diagnostics;
 
 namespace TestConsole
 {
-    internal class Program
+    public class Program
     {
         static void Main(string[] args)
         {
-
             Thread serverThread = new Thread(ServerProgram);
-            Thread clientThread = new Thread(ClientProgram);
-
             serverThread.Start();
-            //clientThread.Start();
 
 
         }
 
-        public static void ClientProgram()
-        {
-
-            CommunicatorClient client =
-                (CommunicatorClient)CommunicationFactory.GetCommunicator(isClientSide: true);
-            FileSender fileSender = FileCloner.GetFileSender();
-
-            string serverIP = "10.128.9.66";
-            string serverPort = "60469";
-            client.Start(serverIP, serverPort);
-            Console.WriteLine($"Client address is {client.GetMyIP()}:{client.GetMyPort()}");
-
-
-
-            while (true)
-            {
-                try
-                {
-                    string? message = Console.ReadLine();
-                    if (message != null)
-                    {
-                        client.Send(message, "FileReceiver", null);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    break;
-                }
-
-            }
-
-
-
-            client.Stop();
-        }
         public static void ServerProgram()
         {
             CommunicatorServer server =
@@ -64,6 +26,9 @@ namespace TestConsole
             string serverIP = serverAddress.Split(':')[0];
             string serverPort = serverAddress.Split(":")[1];
             Console.WriteLine($"Server Address is {serverAddress}");
+
+            StartWorkerAppInSeparateConsole([serverIP, serverPort]);
+
 
             while (true)
             {
@@ -92,7 +57,6 @@ namespace TestConsole
                     }
 
 
-
                 }
                 catch (Exception ex)
                 {
@@ -103,6 +67,24 @@ namespace TestConsole
 
             server.Stop();
 
+        }
+        public static void StartWorkerAppInSeparateConsole(string[] argsToPass)
+        {
+            ProcessStartInfo startInfo = new ProcessStartInfo
+            {
+                FileName = "TestConsoleClient.exe", // Path to your console app executable
+                //Arguments = string.Join(" ", argsToPass),
+                Arguments = $" {argsToPass[0]} {argsToPass[1]}",
+                UseShellExecute = true,     // Ensures it opens in a separate terminal
+                CreateNoWindow = false      // Set to false to ensure the window is visible
+            };
+
+            Process process = Process.Start(startInfo);
+            process.EnableRaisingEvents = true;
+            process.Exited += (sender, e) =>
+            {
+                Console.WriteLine("WorkerApp has exited.");
+            };
         }
     }
 }
