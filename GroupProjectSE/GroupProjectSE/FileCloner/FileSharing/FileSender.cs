@@ -19,7 +19,7 @@ public class FileSender : FileClonerHeaders, INotificationHandler
     private const string SendToModule = "FileReceiver";
     private const string CurrentModule = "FileSender";
     //private CommunicatorServer _fileServer;
-    private ICommunicator _fileSender;
+    private ICommunicator _fileSenderClient;
 
     private string _myServerAddress;
     private string _myIP;
@@ -28,10 +28,10 @@ public class FileSender : FileClonerHeaders, INotificationHandler
     public FileSender() : base(CurrentModule)
     {
         _logger.Log("FileSender Constructing");
-        _fileSender = CommunicationFactory.GetCommunicator(isClientSide: true);
+        _fileSenderClient = CommunicationFactory.GetCommunicator(isClientSide: true);
 
-        _myIP = _fileSender.GetMyIP();
-        _myServerAddress = $"{_myIP}_{_fileSender.GetMyPort()}";
+        _myIP = _fileSenderClient.GetMyIP();
+        _myServerAddress = $"{_myIP}_{_fileSenderClient.GetMyPort()}";
 
         // create a file server in each device to serve the files
         //_fileServer = new CommunicatorServer();
@@ -42,7 +42,7 @@ public class FileSender : FileClonerHeaders, INotificationHandler
         //_logger.Log($"My IP is {_myIP}");
 
         // subscribe to messages with module name as "FileSender"
-        _fileSender.Subscribe(CurrentModule, this, false);
+        _fileSenderClient.Subscribe(CurrentModule, this, false);
 
         //// gets the reference of the map
         //_clientIdToSocket = _fileServer.GetClientList();
@@ -51,6 +51,7 @@ public class FileSender : FileClonerHeaders, INotificationHandler
     public void OnDataReceived(string serializedData)
     {
         // after the header contains the serialized data
+        Console.Write(serializedData);
         string[] serializedDataList = serializedData.Split(':', MessageSplitLength);
         if (serializedDataList.Length != MessageSplitLength)
         {
@@ -132,7 +133,7 @@ public class FileSender : FileClonerHeaders, INotificationHandler
                 );
 
                 // Send the chunk over the network, to the server, hence giving null from client side
-                _fileSender.Send(
+                _fileSenderClient.Send(
                     GetMessage(AckCloneFilesHeader, $"{filePath}:{count}/{numberOfTransmissionsRequired}:{chunk}"),
                     SendToModule, null);
                 ++count;
@@ -189,7 +190,7 @@ public class FileSender : FileClonerHeaders, INotificationHandler
         //    fileDataList, new JsonSerializerOptions { WriteIndented = true }
         //);
 
-        _fileSender.Send(
+        _fileSenderClient.Send(
             GetMessage(AckFileRequestHeader, jsonResponse),
             SendToModule, null);
     }
