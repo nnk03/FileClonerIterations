@@ -43,7 +43,7 @@ namespace TestConsoleClient
                     string? message = Console.ReadLine();
                     if (message != null)
                     {
-                        client.Send(message, "FileReceiver", null);
+                        client.Send(message, "SERVER", null);
                     }
                 }
                 catch (Exception ex)

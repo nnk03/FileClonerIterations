@@ -21,6 +21,7 @@ namespace TestConsole
             CommunicatorServer server =
                 (CommunicatorServer)CommunicationFactory.GetCommunicator(isClientSide: false);
             FileReceiver fileReceiver = FileCloner.GetFileReceiver();
+            server.Subscribe("SERVER", fileReceiver, false);
 
             string serverAddress = server.Start();
             string serverIP = serverAddress.Split(':')[0];
