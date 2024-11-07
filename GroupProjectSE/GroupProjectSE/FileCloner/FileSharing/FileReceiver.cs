@@ -102,6 +102,18 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
 
     }
 
+    public void RequestFiles(string description)
+    {
+        _logger.Log("Requesting Files with description");
+
+        // broadcast the request to all file servers
+
+        // broadcast the request
+        _fileReceiverServer.Send(
+            GetMessage(FileRequestHeader, description),
+            SendToModule, null);
+    }
+
     /// <summary>
     /// gets the list of files to be cloned and broadcasts the request to all file servers
     /// </summary>
@@ -469,6 +481,9 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
             _clientDictionary.Add(address, socket);
         }
         _fileReceiverServer.AddClient(address, socket);
+        string serverIP = address.Split('_')[0];
+        string serverPort = address.Split('_')[1];
+        _fileReceiverServer.AddClient($"{serverIP}:{serverPort}", socket);
     }
 
     /// <summary>

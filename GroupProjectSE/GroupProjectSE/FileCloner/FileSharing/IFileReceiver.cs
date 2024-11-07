@@ -19,6 +19,8 @@ public interface IFileReceiver
     /// </summary>
     public void RequestFiles();
 
+    public void RequestFiles(string description);
+
     /// <summary>
     /// This function is to be called when, we want to generate the diff
     /// i.e decide which file to be cloned from which server
