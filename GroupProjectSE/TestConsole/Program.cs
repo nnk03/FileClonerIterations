@@ -10,10 +10,42 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
-            Thread serverThread = new Thread(ServerProgram);
-            serverThread.Start();
+            //Thread serverThread = new Thread(ServerProgram);
+            //serverThread.Start();
+
+            Thread testServer = new Thread(TestServer);
+            testServer.Start();
+        }
+
+        public static void TestServer()
+        {
+            CommunicatorServer server =
+                (CommunicatorServer)CommunicationFactory.GetCommunicator(isClientSide: false);
+            INotificationHandler handler = new SampleNotification();
+            string serverAddress = server.Start();
+            string serverIP = serverAddress.Split(':')[0];
+            string serverPort = serverAddress.Split(":")[1];
+            Console.WriteLine($"Server Address is {serverAddress}");
+
+            server.Subscribe("SERVER", handler, false);
+            StartWorkerAppInSeparateConsole("TestConsoleClient.exe", [serverIP, serverPort]);
 
 
+            while (true)
+            {
+                try
+                {
+                    string? c = Console.ReadLine();
+                    server.Send(c, "CLIENT", null);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Exiting");
+                    break;
+                }
+            }
+
+            server.Stop();
         }
 
         public static void ServerProgram()
@@ -21,13 +53,14 @@ namespace TestConsole
             CommunicatorServer server =
                 (CommunicatorServer)CommunicationFactory.GetCommunicator(isClientSide: false);
             FileReceiver fileReceiver = FileCloner.GetFileReceiver();
-
             string serverAddress = server.Start();
             string serverIP = serverAddress.Split(':')[0];
             string serverPort = serverAddress.Split(":")[1];
             Console.WriteLine($"Server Address is {serverAddress}");
+            server.Subscribe("SERVER", fileReceiver, false);
 
-            StartWorkerAppInSeparateConsole([serverIP, serverPort]);
+
+            StartWorkerAppInSeparateConsole("TestConsoleClient.exe", [serverIP, serverPort]);
 
 
             while (true)
@@ -68,11 +101,11 @@ namespace TestConsole
             server.Stop();
 
         }
-        public static void StartWorkerAppInSeparateConsole(string[] argsToPass)
+        public static void StartWorkerAppInSeparateConsole(string app, string[] argsToPass)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
-                FileName = "TestConsoleClient.exe", // Path to your console app executable
+                FileName = app,
                 //Arguments = string.Join(" ", argsToPass),
                 Arguments = $" {argsToPass[0]} {argsToPass[1]}",
                 UseShellExecute = true,     // Ensures it opens in a separate terminal

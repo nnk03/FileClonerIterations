@@ -190,7 +190,7 @@ public class FileClonerHeaders
     //{
     //    string address = GetAddressFromSocket(socket);
     //    _logger.Log($"Client Joined : {address}");
-    //    Console.WriteLine($"Client Joined : {address}");
+    //    Debug.WriteLine($"Client Joined : {address}");
     //    lock (_syncLock)
     //    {
     //        _clientDictionary.Add(address, socket);
@@ -204,7 +204,7 @@ public class FileClonerHeaders
     //public void OnClientLeft(string clientId)
     //{
     //    _logger.Log($"Client left, client ID is: {clientId}");
-    //    Console.WriteLine($"Client left, client ID is: {clientId}");
+    //    Debug.WriteLine($"Client left, client ID is: {clientId}");
     //    lock (_syncLock)
     //    {
     //        if (_clientDictionary.ContainsKey(clientId))

@@ -22,7 +22,7 @@ namespace Networking.Communication
         /// Server side: If success then address of the server as a 
         ///  string of "IP:Port", else string "failure"
         /// </returns>
-        public string Start(string serverIP = null,
+        public string Start(string serverIP = null, 
             string serverPort = null);
 
         /// <summary>
@@ -101,6 +101,7 @@ namespace Networking.Communication
         public Dictionary<string, TcpClient> GetClientList();
 
         public string GetMyIP();
+
         public string GetMyPort();
     }
 }

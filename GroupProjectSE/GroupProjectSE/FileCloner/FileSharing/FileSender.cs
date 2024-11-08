@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Networking.Communication;
 using Networking;
 using System.Net.Sockets;
+using System.Diagnostics;
 
 namespace GroupProjectSE.FileCloning.FileSharing;
 public class FileSender : FileClonerHeaders, INotificationHandler
@@ -222,7 +223,7 @@ public class FileSender : FileClonerHeaders, INotificationHandler
     {
         string address = GetAddressFromSocket(socket, otherEnd: true);
         _logger.Log($"Client Joined : {address}");
-        Console.WriteLine($"Client Joined : {address}");
+        Debug.WriteLine($"Client Joined : {address}");
         lock (_syncLock)
         {
             _clientDictionary.Add(address, socket);
@@ -236,7 +237,7 @@ public class FileSender : FileClonerHeaders, INotificationHandler
     public void OnClientLeft(string clientId)
     {
         _logger.Log($"Client left, client ID is: {clientId}");
-        Console.WriteLine($"Client left, client ID is: {clientId}");
+        Debug.WriteLine($"Client left, client ID is: {clientId}");
         lock (_syncLock)
         {
             if (_clientDictionary.ContainsKey(clientId))

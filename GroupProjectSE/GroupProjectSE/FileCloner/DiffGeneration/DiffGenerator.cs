@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -116,7 +117,7 @@ public class DiffGenerator
 
         // Call method to write all files to a text file
         WriteAllFilesToFile(files, _diffFilePath);
-        Console.WriteLine("Summary Generated");
+        Debug.WriteLine("Summary Generated");
     }
 
     // Method to write all files in the dictionary to a file

@@ -131,7 +131,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
             SendToModule, null);
 
         // for debugging
-        Console.WriteLine("Requested");
+        Debug.WriteLine("Requested");
     }
 
     /// <summary>
@@ -196,7 +196,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
                 SendToModule, GetClientId(fromWhichHost)
                 );
         }
-        Console.WriteLine("Requested to Clone");
+        Debug.WriteLine("Requested to Clone");
 
 
     }
@@ -208,7 +208,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
     public void OnDataReceived(string serializedData)
     {
         // after the header contains the serialized data
-        Console.WriteLine(serializedData);
+        Debug.WriteLine(serializedData);
         string[] serializedDataList = serializedData.Split(':', MessageSplitLength);
         if (serializedDataList.Length != MessageSplitLength)
         {
@@ -475,7 +475,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
     {
         string address = GetAddressFromSocket(socket, otherEnd: true);
         _logger.Log($"Client Joined : {address}");
-        Console.WriteLine($"Client Joined : {address}");
+        Debug.WriteLine($"Client Joined : {address}");
         lock (_syncLock)
         {
             _clientDictionary.Add(address, socket);
@@ -493,7 +493,7 @@ public class FileReceiver : FileClonerHeaders, IFileReceiver, INotificationHandl
     public void OnClientLeft(string clientId)
     {
         _logger.Log($"Client left, client ID is: {clientId}");
-        Console.WriteLine($"Client left, client ID is: {clientId}");
+        Debug.WriteLine($"Client left, client ID is: {clientId}");
         lock (_syncLock)
         {
             if (_clientDictionary.ContainsKey(clientId))
