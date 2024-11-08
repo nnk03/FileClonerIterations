@@ -2,6 +2,7 @@
 using GroupProjectSE.FileCloning.FileSharing;
 using Networking;
 using Networking.Communication;
+using System.Data;
 
 namespace TestConsoleClient
 {
@@ -15,11 +16,46 @@ namespace TestConsoleClient
                 Console.WriteLine(arg);
             }
 
-            Thread clientThread = new(() =>
+            //Thread clientThread = new(() =>
+            //{
+            //    ClientProgram(args[0], args[1]);
+            //});
+            //clientThread.Start();
+
+            Thread testClient = new(() =>
             {
-                ClientProgram(args[0], args[1]);
+                ClientTest(args[0], args[1]);
             });
-            clientThread.Start();
+            testClient.Start();
+
+        }
+
+        public static void ClientTest(string serverIP, string serverPort)
+        {
+            CommunicatorClient client =
+                (CommunicatorClient)CommunicationFactory.GetCommunicator(isClientSide: true);
+            INotificationHandler handler = new SampleNotification();
+            client.Start(serverIP, serverPort);
+            client.Subscribe("CLIENT", handler, false);
+
+            while (true)
+            {
+                try
+                {
+                    string? message = Console.ReadLine();
+                    if (message != null)
+                    {
+                        client.Send(message, "SERVER", null);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    break;
+                }
+
+            }
+
+            client.Stop();
 
         }
         public static void ClientProgram(string serverIP, string serverPort)
@@ -32,7 +68,7 @@ namespace TestConsoleClient
             }
 
             client.Start(serverIP, serverPort);
-            FileSender fileSender = FileCloner.GetFileSender();
+            //FileSender fileSender = FileCloner.GetFileSender();
 
             Console.WriteLine($"Client address is {client.GetMyIP()}:{client.GetMyPort()}");
 
